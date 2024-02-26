@@ -1,0 +1,10 @@
+{
+    "arrowParens": "always",
+    "semi": true,
+    "tabWidth": 2,
+    "useTabs": true,
+    "printWidth": 80,
+    "trailingComma": "none",
+    "singleQuote": false,
+    "bracketSpacing": true
+}
