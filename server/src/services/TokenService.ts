@@ -3,17 +3,24 @@ import jwt from "jsonwebtoken";
 import { UserDto } from "../dtos/UserDto";
 import { UserModel } from "../models/User";
 import { SessionModel } from "../models/Session";
-import { ApiError } from "../utils/ApiError";
 
 export class TokenService {
 	static generateTokens(user: UserDto) {
-		const accessToken = jwt.sign(user, process.env.JWT_ACCESS_SECRET || "", {
-			expiresIn: "30s"
-		});
+		const accessToken = jwt.sign(
+			{ user },
+			process.env.JWT_ACCESS_SECRET || "",
+			{
+				expiresIn: "5m"
+			}
+		);
 
-		const refreshToken = jwt.sign(user, process.env.JWT_REFRESH_SECRET || "", {
-			expiresIn: "30d"
-		});
+		const refreshToken = jwt.sign(
+			{ user },
+			process.env.JWT_REFRESH_SECRET || "",
+			{
+				expiresIn: "30d"
+			}
+		);
 
 		return { accessToken, refreshToken };
 	}
@@ -62,7 +69,7 @@ export class TokenService {
 
 	static async refresh(token: string) {
 		const userId = await this.validateRefreshToken(token);
-		const tokenFromDb = await SessionModel.findOne({ token });
+		const tokenFromDb = await SessionModel.findOne({ refreshToken: token });
 
 		if (!userId || !tokenFromDb) {
 			return null;

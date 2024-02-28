@@ -15,18 +15,18 @@ export class AuthController {
 				return ApiError.badRequest("Please, fill in all the fields");
 			}
 
-			const { tokens, user } = await AuthService.login(login, password);
+			const { accessToken, refreshToken } = await AuthService.login(
+				login,
+				password
+			);
 
-			res.cookie("accessToken", tokens.accessToken, {
-				maxAge: 1000 * 60 * 15
-			});
-
-			res.cookie("refreshToken", tokens.refreshToken, {
+			res.cookie("refreshToken", refreshToken, {
 				maxAge: 1000 * 60 * 60 * 24 * 30,
-				httpOnly: true
+				httpOnly: true,
+				path: "/api/auth"
 			});
 
-			return res.json({ ...user });
+			return res.json({ accessToken });
 		} catch (e) {
 			next(e);
 		}
@@ -43,19 +43,20 @@ export class AuthController {
 				return ApiError.badRequest("Please, fill in all the fields");
 			}
 
-			const { tokens, user } = await AuthService.registration(login, password);
+			const { accessToken, refreshToken } = await AuthService.registration(
+				login,
+				password
+			);
 
-			res.cookie("accessToken", tokens.accessToken, {
-				maxAge: 1000 * 60 * 15
-			});
-
-			res.cookie("refreshToken", tokens.refreshToken, {
+			res.cookie("refreshToken", refreshToken, {
 				maxAge: 1000 * 60 * 60 * 24 * 30,
-				httpOnly: true
+				httpOnly: true,
+				path: "/api/auth"
 			});
 
-			return res.json({ ...user });
+			return res.json({ accessToken });
 		} catch (e) {
+			console.log(e);
 			next(e);
 		}
 	}
@@ -74,7 +75,7 @@ export class AuthController {
 				throw ApiError.unauthorized();
 			}
 
-			res.clearCookie("accessToken").clearCookie("refreshToken");
+			res.clearCookie("refreshToken");
 
 			return res.json({ message: result });
 		} catch (e) {
@@ -87,7 +88,6 @@ export class AuthController {
 			const clearTokens = () => {
 				return res
 					.status(401)
-					.clearCookie("accessToken")
 					.clearCookie("refreshToken")
 					.json({ message: "You unauthorized" });
 			};
@@ -104,16 +104,16 @@ export class AuthController {
 				return clearTokens();
 			}
 
-			res.cookie("accessToken", result.tokens.accessToken, {
-				maxAge: 1000 * 60 * 15
-			});
-
 			res.cookie("refreshToken", result.tokens.refreshToken, {
 				maxAge: 1000 * 60 * 60 * 24 * 30,
-				httpOnly: true
+				httpOnly: true,
+				path: "/api/auth"
 			});
 
-			return res.json({ ...result.user });
+			return res.json({
+				user: result.user,
+				accessToken: result.tokens.accessToken
+			});
 		} catch (e) {
 			next(e);
 		}
