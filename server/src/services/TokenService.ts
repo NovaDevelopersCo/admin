@@ -87,6 +87,6 @@ export class TokenService {
 
 		await this.saveToken(tokens.refreshToken, user._id);
 
-		return { tokens, user: userDto };
+		return tokens;
 	}
 }

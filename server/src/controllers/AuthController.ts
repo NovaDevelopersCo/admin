@@ -56,7 +56,6 @@ export class AuthController {
 
 			return res.json({ accessToken });
 		} catch (e) {
-			console.log(e);
 			next(e);
 		}
 	}
@@ -92,28 +91,47 @@ export class AuthController {
 					.json({ message: "You unauthorized" });
 			};
 
-			const { refreshToken } = req.cookies as { refreshToken: string };
+			const { refreshToken: tokenFromCookie } = req.cookies as {
+				refreshToken: string;
+			};
 
-			if (!refreshToken) {
+			if (!tokenFromCookie) {
 				return clearTokens();
 			}
 
-			const result = await TokenService.refresh(refreshToken);
+			const result = await TokenService.refresh(tokenFromCookie);
 
 			if (!result) {
 				return clearTokens();
 			}
 
-			res.cookie("refreshToken", result.tokens.refreshToken, {
+			const { accessToken, refreshToken } = result;
+
+			res.cookie("refreshToken", refreshToken, {
 				maxAge: 1000 * 60 * 60 * 24 * 30,
 				httpOnly: true,
 				path: "/api/auth"
 			});
 
 			return res.json({
-				user: result.user,
-				accessToken: result.tokens.accessToken
+				accessToken
 			});
+		} catch (e) {
+			next(e);
+		}
+	}
+
+	static async getProfile(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { userId } = req;
+
+			if (!userId) {
+				throw ApiError.unauthorized();
+			}
+
+			const profile = await AuthService.getProfile(userId);
+
+			return res.json({ ...profile });
 		} catch (e) {
 			next(e);
 		}

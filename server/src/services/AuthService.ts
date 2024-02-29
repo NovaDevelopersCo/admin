@@ -56,4 +56,16 @@ export class AuthService {
 		const result = await SessionModel.deleteOne({ refreshToken });
 		return result.deletedCount > 0;
 	}
+
+	static async getProfile(userId: string) {
+		const profile = await UserModel.findById(userId);
+
+		if (!profile) {
+			throw ApiError.unauthorized();
+		}
+
+		const profileDto = new UserDto(profile);
+
+		return profileDto;
+	}
 }
