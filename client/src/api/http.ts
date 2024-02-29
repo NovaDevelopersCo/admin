@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { refresh } from "./services/refresh";
+import { AuthService } from "./AuthService";
 
 import { useAuthStore } from "../store/auth";
 
@@ -27,13 +27,11 @@ $api.interceptors.response.use(
 		if (e.response && e.response?.status === 401 && !e._isRetry) {
 			e._isRetry = true;
 
-			const isRefresh = await refresh();
+			const isRefresh = await AuthService.refresh();
 
 			if (isRefresh) {
 				return $api(origin);
 			}
-
-			window.location.replace("/login");
 		}
 
 		throw e;

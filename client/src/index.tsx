@@ -1,12 +1,7 @@
 import ReactDOM from "react-dom/client";
-import { AppRouter } from "./router/AppRouter";
 
-import "../src/styles/index.css";
+import { App } from "./components/App";
 
-import { AppProvider } from "./providers/AppProvider";
+import "../src/index.css";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-	<AppProvider>
-		<AppRouter />
-	</AppProvider>
-);
+ReactDOM.createRoot(document.getElementById("root")!).render(<App />);
