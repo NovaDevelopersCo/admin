@@ -25,14 +25,15 @@ export class CardController {
 		try {
 			const { title, range, sort } = req.query as {
 				title: string;
-				range: [string, string];
-				sort: ["price" | "description" | "title" | "count", string];
+				range: string;
+				sort: ["price" | "description" | "title" | "count" | "id", string];
 			};
 
 			const cards = await CardService.getList(title, sort, range);
 
 			return res.json({ cards, total: cards.length });
 		} catch (e) {
+			console.log(e);
 			next(e);
 		}
 	}
@@ -74,6 +75,7 @@ export class CardController {
 
 			return res.json({ card });
 		} catch (e) {
+			console.log(e);
 			next(e);
 		}
 	}

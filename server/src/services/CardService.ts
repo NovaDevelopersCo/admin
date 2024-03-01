@@ -2,6 +2,7 @@ import { CardModel } from "../models/Card";
 import { ApiError } from "../utils/ApiError";
 import type { TCard } from "../types";
 import { ImageService } from "./ImageService";
+import { formatObjWithId } from "../utils/formatObjWithId";
 
 export class CardService {
 	static async getOne(id: string) {
@@ -16,26 +17,30 @@ export class CardService {
 
 	static async getList(
 		title: string,
-		sort: ["price" | "description" | "title" | "count", string],
-		range: [string, string]
+		sort: ["price" | "description" | "title" | "count" | "id", string],
+		range: string
 	) {
-		const [sortFields, sortOrder] = sort;
+		const [field, sortOrder] = sort;
 
-		const [filterStart, filterEnd] = range;
+		const sortField = field === "id" ? "_id" : field;
+
+		const [filterStart, filterEnd] = JSON.parse(range);
 
 		const allCards = await CardModel.find();
 
-		const filteredByTitle = allCards.filter((i) => i.title.includes(title));
+		const filteredByTitle = title
+			? allCards.filter((i) => i.title.includes(title))
+			: allCards;
 
-		const sortedAndSplicedCards = filteredByTitle
-			.sort((a, b) =>
-				sortOrder === "ASC"
-					? a[sortFields].localeCompare(b[sortFields])
-					: b[sortFields].localeCompare(a[sortFields])
-			)
-			.splice(+filterStart, +filterEnd);
+		// .sort((a, b) =>
+		// 		sortOrder === "ASC"
+		// 			? a[sortField].localeCompare(b[sortField])
+		// 			: b[sortField].localeCompare(a[sortField])
+		// 	)
 
-		return sortedAndSplicedCards;
+		const splicedCards = filteredByTitle.splice(+filterStart, +filterEnd);
+
+		return formatObjWithId(splicedCards);
 	}
 
 	static async getMany(filter?: { ids: string[] }) {
@@ -56,9 +61,10 @@ export class CardService {
 			throw ApiError.badRequest("Title is busy!");
 		}
 
-		const image = ImageService.upload(card.image, card.title);
+		const newCard = new CardModel({ ...card });
+		const image = await ImageService.upload(card.image, newCard._id);
 
-		const newCard = new CardModel({ ...card, image });
+		newCard.image = image;
 
 		await newCard.save();
 
