@@ -1,17 +1,16 @@
-import { DataProvider, fetchUtils } from "react-admin";
+import { DataProvider, fetchUtils, withLifecycleCallbacks } from "react-admin";
 
-import { formatResource } from "../utils/formatResource";
+import { convertToBase64 } from "../utils/convertToBase64";
+import { httpClientWithToken } from "../utils/httpClientWithToken";
 
 const httpClient = fetchUtils.fetchJson;
 
 import qs from "qs";
 
-export const dataProvider: DataProvider = {
+const provider: DataProvider = {
 	getOne: async (res, par) => {
 		const { json } = await httpClient(
-			`${import.meta.env.VITE_SIMPLE_REST_URL}/${formatResource(res)}/${
-				par.id
-			}`,
+			`${import.meta.env.VITE_SIMPLE_REST_URL}/${res}/${par.id}`,
 			{
 				method: "GET"
 			}
@@ -22,9 +21,9 @@ export const dataProvider: DataProvider = {
 		const query = {
 			filter: JSON.stringify({ id: par.ids })
 		};
-		const url = `${import.meta.env.VITE_SIMPLE_REST_URL}/${formatResource(
-			res
-		)}?${qs.stringify(query)}`;
+		const url = `${import.meta.env.VITE_SIMPLE_REST_URL}/${res}?${qs.stringify(
+			query
+		)}`;
 
 		const { json } = await httpClient(url, {
 			method: "GET"
@@ -42,9 +41,9 @@ export const dataProvider: DataProvider = {
 			filter: JSON.stringify(par.filter)
 		};
 
-		const url = `${import.meta.env.VITE_SIMPLE_REST_URL}/${formatResource(
-			res
-		)}?${qs.stringify(query)}`;
+		const url = `${import.meta.env.VITE_SIMPLE_REST_URL}/${res}?${qs.stringify(
+			query
+		)}`;
 
 		const {
 			json: { cards, total }
@@ -53,5 +52,37 @@ export const dataProvider: DataProvider = {
 		});
 
 		return { data: [...cards], total };
+	},
+	create: async (res, par) => {
+		const { json } = await httpClientWithToken(
+			`${import.meta.env.VITE_SIMPLE_REST_URL}/${res}`,
+			{
+				method: "POST",
+				body: JSON.stringify(par.data)
+			}
+		);
+
+		const { _id, ...jsonCard } = json;
+
+		const data = { ...jsonCard, id: _id };
+
+		return { data };
 	}
 };
+
+export const dataProvider = withLifecycleCallbacks(provider, [
+	{
+		resource: "cards",
+		beforeCreate: async (params, dataProvider: DataProvider) => {
+			const image = await convertToBase64(params.data.image);
+
+			return {
+				...params,
+				data: {
+					...params.data,
+					image
+				}
+			};
+		}
+	}
+]);

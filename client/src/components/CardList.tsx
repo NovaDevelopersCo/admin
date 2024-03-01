@@ -1,17 +1,39 @@
-import { List, Datagrid, TextField } from "react-admin";
-import { useParams } from "react-router-dom";
+import {
+	List,
+	SearchInput,
+	TextInput,
+	TextField,
+	TopToolbar,
+	SelectColumnsButton,
+	FilterButton,
+	CreateButton,
+	DatagridConfigurable
+} from "react-admin";
+
+const ListActions = () => {
+	return (
+		<TopToolbar>
+			<SelectColumnsButton />
+			<FilterButton />
+			<CreateButton />
+		</TopToolbar>
+	);
+};
+
+const cardFilters = [
+	<SearchInput source="q" alwaysOn />,
+	<TextInput label="Title" source="title" defaultValue="Hello, World!" />
+];
 
 export const CardList = () => {
-	const id = useParams();
-
 	return (
-		<List resource="card">
-			<Datagrid rowClick="edit">
-				<TextField source="id" />
+		<List resource="cards" actions={<ListActions />} filters={cardFilters}>
+			<DatagridConfigurable>
 				<TextField source="title" />
-				<TextField source="price" />
 				<TextField source="description" />
-			</Datagrid>
+				<TextField source="price" />
+				<TextField source="count" />
+			</DatagridConfigurable>
 		</List>
 	);
 };
