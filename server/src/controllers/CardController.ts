@@ -31,9 +31,12 @@ export class CardController {
 				sort: ["price" | "description" | "title" | "count" | "id", string];
 			};
 
-			const cards = await CardService.getList(title, sort, range);
+			const { cards, total } = await CardService.getList(title, sort, range);
 
-			return res.json({ cards, total: cards.length });
+			return res.json({
+				cards,
+				total
+			});
 		} catch (e) {
 			next(e);
 		}

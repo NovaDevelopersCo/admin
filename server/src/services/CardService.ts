@@ -39,11 +39,12 @@ export class CardService {
 		// 			: b[sortField].localeCompare(a[sortField])
 		// 	)
 
-		const splicedCards = filteredByTitle.splice(+filterStart, +filterEnd);
+		const splicedCards = filteredByTitle.slice(+filterStart, +filterEnd);
 
-		const formattedCards = splicedCards;
-
-		return Array.isArray(formattedCards) ? formattedCards : [];
+		return {
+			cards: Array.isArray(splicedCards) ? splicedCards : [],
+			total: filteredByTitle.length
+		};
 	}
 
 	static async getMany(filter?: { ids: string[] }) {
