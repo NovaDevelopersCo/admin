@@ -13,7 +13,7 @@ export class CardController {
 				throw ApiError.badRequest("Param id is empty");
 			}
 
-			const card = CardService.getOne(id);
+			const card = await CardService.getOne(id);
 
 			return res.json({ card });
 		} catch (e) {
@@ -90,6 +90,33 @@ export class CardController {
 
 			const card = await CardService.delete(id);
 		} catch (e) {
+			next(e);
+		}
+	}
+
+	static async update(req: Request, res: Response, next: NextFunction) {
+		try {
+			const fields = req.body as TCard & {
+				isImageUpdated: boolean;
+			};
+
+			const { id } = req.params as { id: string };
+
+			if (!id) {
+				throw ApiError.badRequest("Param id is empty");
+			}
+
+			const { title, description } = fields;
+
+			if (!title || !description) {
+				throw ApiError.badRequest("Please, fill in all the fields");
+			}
+
+			const card = await CardService.update(fields, id);
+
+			return res.json({ card });
+		} catch (e) {
+			console.log(e);
 			next(e);
 		}
 	}

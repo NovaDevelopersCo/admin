@@ -2,7 +2,6 @@ import { CardModel } from "../models/Card";
 import { ApiError } from "../utils/ApiError";
 import type { TCard } from "../types";
 import { ImageService } from "./ImageService";
-import { formatObjWithId } from "../utils/formatObjWithId";
 
 export class CardService {
 	static async getOne(id: string) {
@@ -16,11 +15,13 @@ export class CardService {
 	}
 
 	static async getList(
-		title: string,
+		unpArsedTitle: string,
 		sort: ["price" | "description" | "title" | "count" | "id", string],
 		range: string
 	) {
 		const [field, sortOrder] = sort;
+
+		const title = unpArsedTitle ? JSON.parse(unpArsedTitle) : "";
 
 		const sortField = field === "id" ? "_id" : field;
 
@@ -40,7 +41,9 @@ export class CardService {
 
 		const splicedCards = filteredByTitle.splice(+filterStart, +filterEnd);
 
-		return formatObjWithId(splicedCards);
+		const formattedCards = splicedCards;
+
+		return Array.isArray(formattedCards) ? formattedCards : [];
 	}
 
 	static async getMany(filter?: { ids: string[] }) {
@@ -49,7 +52,10 @@ export class CardService {
 		}
 
 		const cards = await CardModel.find({ _id: { $in: filter.ids } });
-		return cards;
+
+		const formattedCards = cards;
+
+		return Array.isArray(formattedCards) ? formattedCards : [];
 	}
 
 	static async getManyReference() {}
@@ -79,5 +85,26 @@ export class CardService {
 		}
 
 		const resultDeleteImage = await ImageService.remove(candidate.title);
+	}
+
+	static async update(card: TCard, id: string) {
+		const { image, ...data } = card;
+
+		const candidate = await CardModel.findById(id);
+
+		if (!candidate) {
+			throw ApiError.badRequest("Card not found");
+		}
+
+		Object.assign(candidate, data);
+
+		if (image) {
+			const imageUrl = await ImageService.upload(image, candidate._id);
+			candidate.image = imageUrl;
+		}
+
+		await candidate.save();
+
+		return candidate;
 	}
 }
