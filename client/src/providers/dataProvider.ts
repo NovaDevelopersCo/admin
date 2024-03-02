@@ -2,6 +2,7 @@ import { DataProvider, fetchUtils, withLifecycleCallbacks } from "react-admin";
 
 import { convertToBase64 } from "../utils/convertToBase64";
 import { httpClientWithToken } from "../utils/httpClientWithToken";
+import { formatObjId } from "../utils/formatObjId";
 
 const httpClient = fetchUtils.fetchJson;
 
@@ -15,7 +16,8 @@ const provider: DataProvider = {
 				method: "GET"
 			}
 		);
-		return { data: json };
+
+		return { data: formatObjId(json.card) };
 	},
 	getMany: async (res, par) => {
 		const query = {
@@ -29,7 +31,9 @@ const provider: DataProvider = {
 			method: "GET"
 		});
 
-		return { data: [...json.card] };
+		const formatted = formatObjId(json.cards);
+
+		return { data: [...(Array.isArray(formatted) ? formatted : [])] };
 	},
 	getList: async (res, par) => {
 		const { page, perPage } = par.pagination;
@@ -38,7 +42,7 @@ const provider: DataProvider = {
 		const query = {
 			sort: JSON.stringify([field, order]),
 			range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
-			filter: JSON.stringify(par.filter)
+			title: JSON.stringify(par.filter.q)
 		};
 
 		const url = `${import.meta.env.VITE_SIMPLE_REST_URL}/${res}?${qs.stringify(
@@ -51,7 +55,9 @@ const provider: DataProvider = {
 			method: "GET"
 		});
 
-		return { data: [...cards], total };
+		const formatted = formatObjId(cards);
+
+		return { data: [...(Array.isArray(formatted) ? formatted : [])], total };
 	},
 	create: async (res, par) => {
 		const { json } = await httpClientWithToken(
@@ -62,11 +68,18 @@ const provider: DataProvider = {
 			}
 		);
 
-		const { _id, ...jsonCard } = json;
+		return { data: formatObjId(json) };
+	},
+	update: async (res, par) => {
+		const { json } = await httpClientWithToken(
+			`${import.meta.env.VITE_SIMPLE_REST_URL}/${res}/${par.id}`,
+			{
+				method: "PUT",
+				body: JSON.stringify(par.data)
+			}
+		);
 
-		const data = { ...jsonCard, id: _id };
-
-		return { data };
+		return { data: formatObjId(json.card) };
 	}
 };
 
@@ -82,6 +95,18 @@ export const dataProvider = withLifecycleCallbacks(provider, [
 					...params.data,
 					image
 				}
+			};
+		},
+		beforeUpdate: async (params, dataProvider: DataProvider) => {
+			const { image, ...data } = params.data;
+
+			if (image !== params.previousData.image) {
+				data.image = await convertToBase64(params.data.image);
+			}
+
+			return {
+				...params,
+				data
 			};
 		}
 	}

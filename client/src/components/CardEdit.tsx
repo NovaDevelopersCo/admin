@@ -1,22 +1,22 @@
 import {
-	Create,
-	ImageInput,
+	Edit,
 	SimpleForm,
 	TextInput,
+	required,
 	maxLength,
-	maxValue,
-	minValue,
 	number,
-	required
+	minValue,
+	maxValue,
+	ImageInput
 } from "react-admin";
 
-export const CardCreate = () => {
+export const CardEdit = () => {
 	// maxLength to title
 	// minValue, maxValue, isInteger to price
 	// minValue, maxValue, isInteger to count
 
 	return (
-		<Create>
+		<Edit>
 			<SimpleForm>
 				<TextInput
 					source="title"
@@ -43,6 +43,6 @@ export const CardCreate = () => {
 					fullWidth
 				/>
 			</SimpleForm>
-		</Create>
+		</Edit>
 	);
 };

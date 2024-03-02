@@ -11,8 +11,8 @@ export type TUser = {
 export type TCard = {
 	_id: string;
 	image: string;
-	price: number;
+	price: string;
 	description: string;
 	title: string;
-	count: number;
+	count: string;
 };

@@ -1,29 +1,27 @@
 import {
 	List,
 	SearchInput,
-	TextInput,
 	TextField,
 	TopToolbar,
 	SelectColumnsButton,
-	FilterButton,
 	CreateButton,
-	DatagridConfigurable
+	DatagridConfigurable,
+	ImageField,
+	EditButton,
+	ShowButton,
+	WrapperField
 } from "react-admin";
 
 const ListActions = () => {
 	return (
 		<TopToolbar>
 			<SelectColumnsButton />
-			<FilterButton />
 			<CreateButton />
 		</TopToolbar>
 	);
 };
 
-const cardFilters = [
-	<SearchInput source="q" alwaysOn />,
-	<TextInput label="Title" source="title" defaultValue="Hello, World!" />
-];
+const cardFilters = [<SearchInput source="q" alwaysOn />];
 
 export const CardList = () => {
 	return (
@@ -33,6 +31,11 @@ export const CardList = () => {
 				<TextField source="description" />
 				<TextField source="price" />
 				<TextField source="count" />
+				<ImageField source="image" className="max-w-[100px] " />
+				<WrapperField label="Actions">
+					<EditButton />
+					<ShowButton />
+				</WrapperField>
 			</DatagridConfigurable>
 		</List>
 	);
