@@ -80,6 +80,28 @@ const provider: DataProvider = {
 		);
 
 		return { data: formatObjId(json.card) };
+	},
+	delete: async (res, par) => {
+		const { json } = await httpClientWithToken(
+			`${import.meta.env.VITE_SIMPLE_REST_URL}/${res}/${par.id}`,
+			{
+				method: "DELETE"
+			}
+		);
+
+		return { data: formatObjId(json.card) };
+	},
+	deleteMany: async (res, par) => {
+		const { json } = await httpClientWithToken(
+			`${import.meta.env.VITE_SIMPLE_REST_URL}/${res}/many/${JSON.stringify(
+				par.ids
+			)}`,
+			{
+				method: "DELETE"
+			}
+		);
+
+		return { data: formatObjId(json.ids) };
 	}
 };
 

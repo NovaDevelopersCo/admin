@@ -11,10 +11,6 @@ import {
 } from "react-admin";
 
 export const CardCreate = () => {
-	// maxLength to title
-	// minValue, maxValue, isInteger to price
-	// minValue, maxValue, isInteger to count
-
 	return (
 		<Create>
 			<SimpleForm>
