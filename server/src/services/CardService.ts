@@ -84,7 +84,21 @@ export class CardService {
 			throw ApiError.badRequest("Card not found");
 		}
 
-		const resultDeleteImage = await ImageService.remove(candidate.title);
+		const { result } = await ImageService.remove(`alco/cards/${id}`);
+
+		if (result !== "ok") {
+			throw ApiError.badRequest(result);
+		}
+
+		const previousData = candidate;
+
+		const { deletedCount } = await CardModel.deleteOne({ _id: id });
+
+		if (deletedCount == 0) {
+			throw ApiError.badRequest("Error delete");
+		}
+
+		return previousData;
 	}
 
 	static async update(card: TCard, id: string) {
@@ -106,5 +120,27 @@ export class CardService {
 		await candidate.save();
 
 		return candidate;
+	}
+
+	static async deleteMany(unParsedIds: string) {
+		const ids = JSON.parse(unParsedIds) as string[];
+
+		const deleteCards = ids.map(async (id) => {
+			const { result } = await ImageService.remove(`alco/cards/${id}`);
+
+			if (result !== "ok") {
+				throw ApiError.badRequest(`delete image ${id}: ${result}`);
+			}
+
+			const { deletedCount } = await CardModel.deleteOne({ _id: id });
+
+			if (deletedCount == 0) {
+				throw ApiError.badRequest("Error delete");
+			}
+		});
+
+		await Promise.all(deleteCards);
+
+		return ids;
 	}
 }

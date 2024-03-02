@@ -4,6 +4,8 @@ import { ApiError } from "../utils/ApiError";
 import { CardService } from "../services/CardService";
 import { TCard } from "../types";
 
+import { getValidationErrors } from "../utils/getValidationErrors";
+
 export class CardController {
 	static async getOne(req: Request, res: Response, next: NextFunction) {
 		try {
@@ -33,7 +35,6 @@ export class CardController {
 
 			return res.json({ cards, total: cards.length });
 		} catch (e) {
-			console.log(e);
 			next(e);
 		}
 	}
@@ -50,19 +51,10 @@ export class CardController {
 		}
 	}
 
-	static async getManyReference(
-		req: Request,
-		res: Response,
-		next: NextFunction
-	) {
-		try {
-		} catch (e) {
-			next(e);
-		}
-	}
-
 	static async create(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
+
 			const fields = req.body as Omit<TCard, "_id">;
 
 			const { title, image, description } = fields;
@@ -75,7 +67,6 @@ export class CardController {
 
 			return res.json({ card });
 		} catch (e) {
-			console.log(e);
 			next(e);
 		}
 	}
@@ -89,6 +80,8 @@ export class CardController {
 			}
 
 			const card = await CardService.delete(id);
+
+			return res.json({ card });
 		} catch (e) {
 			next(e);
 		}
@@ -96,6 +89,8 @@ export class CardController {
 
 	static async update(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
+
 			const fields = req.body as TCard & {
 				isImageUpdated: boolean;
 			};
@@ -116,7 +111,22 @@ export class CardController {
 
 			return res.json({ card });
 		} catch (e) {
-			console.log(e);
+			next(e);
+		}
+	}
+
+	static async deleteMany(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { ids } = req.params as { ids: string };
+
+			if (!ids) {
+				throw ApiError.badRequest("Ids is empty");
+			}
+
+			const deletedIds = await CardService.deleteMany(ids);
+
+			return res.json({ ids: deletedIds });
+		} catch (e) {
 			next(e);
 		}
 	}
