@@ -37,6 +37,9 @@ export const CardList = () => {
 					<ShowButton />
 				</WrapperField>
 			</DatagridConfigurable>
+			<h3 className="p-[3px] pl-[15px] text-[12px] font-bold opacity-40">
+				NovaDev Template
+			</h3>
 		</List>
 	);
 };

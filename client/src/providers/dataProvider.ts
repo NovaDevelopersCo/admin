@@ -7,6 +7,7 @@ import { $api } from "../api/http";
 
 import qs from "qs";
 
+// @ts-ignore. don't need to use updateMany / getManyReference
 const provider: DataProvider = {
 	getOne: async (res, par) => {
 		const {
@@ -72,9 +73,7 @@ const provider: DataProvider = {
 		} = await $api.delete(url);
 
 		return { data: formatObjId(ids) };
-	},
-	getManyReference: async (res, par) => {},
-	updateMany: async (res, par) => {}
+	}
 };
 
 export const dataProvider = withLifecycleCallbacks(provider, [
