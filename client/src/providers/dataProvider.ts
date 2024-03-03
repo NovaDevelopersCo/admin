@@ -1,37 +1,30 @@
-import { DataProvider, fetchUtils, withLifecycleCallbacks } from "react-admin";
+import { DataProvider, withLifecycleCallbacks } from "react-admin";
 
 import { convertToBase64 } from "../utils/convertToBase64";
-import { httpClientWithToken } from "../utils/httpClientWithToken";
 import { formatObjId } from "../utils/formatObjId";
 
-const httpClient = fetchUtils.fetchJson;
+import { $api } from "../api/http";
 
 import qs from "qs";
 
 const provider: DataProvider = {
 	getOne: async (res, par) => {
-		const { json } = await httpClient(
-			`${import.meta.env.VITE_SIMPLE_REST_URL}/${res}/${par.id}`,
-			{
-				method: "GET"
-			}
-		);
-
-		return { data: formatObjId(json.card) };
+		const {
+			data: { card }
+		} = await $api.get(`/${res}/${par.id}`);
+		return { data: formatObjId(card) };
 	},
 	getMany: async (res, par) => {
 		const query = {
 			filter: JSON.stringify({ id: par.ids })
 		};
-		const url = `${import.meta.env.VITE_SIMPLE_REST_URL}/${res}?${qs.stringify(
-			query
-		)}`;
+		const url = `/${res}?${qs.stringify(query)}`;
 
-		const { json } = await httpClient(url, {
-			method: "GET"
-		});
+		const {
+			data: { cards }
+		} = await $api.get(url);
 
-		const formatted = formatObjId(json.cards);
+		const formatted = formatObjId(cards);
 
 		return { data: [...(Array.isArray(formatted) ? formatted : [])] };
 	},
@@ -45,64 +38,43 @@ const provider: DataProvider = {
 			title: JSON.stringify(par.filter.q)
 		};
 
-		const url = `${import.meta.env.VITE_SIMPLE_REST_URL}/${res}?${qs.stringify(
-			query
-		)}`;
+		const url = `/${res}?${qs.stringify(query)}`;
 
 		const {
-			json: { cards, total }
-		} = await httpClient(url, {
-			method: "GET"
-		});
+			data: { cards, total }
+		} = await $api.get(url);
 
 		const formatted = formatObjId(cards);
 
 		return { data: [...(Array.isArray(formatted) ? formatted : [])], total };
 	},
 	create: async (res, par) => {
-		const { json } = await httpClientWithToken(
-			`${import.meta.env.VITE_SIMPLE_REST_URL}/${res}`,
-			{
-				method: "POST",
-				body: JSON.stringify(par.data)
-			}
-		);
-
-		return { data: formatObjId(json) };
+		const { data } = await $api.post(`/${res}`, { ...par.data });
+		return { data: formatObjId(data) };
 	},
 	update: async (res, par) => {
-		const { json } = await httpClientWithToken(
-			`${import.meta.env.VITE_SIMPLE_REST_URL}/${res}/${par.id}`,
-			{
-				method: "PUT",
-				body: JSON.stringify(par.data)
-			}
-		);
-
-		return { data: formatObjId(json.card) };
+		const {
+			data: { card }
+		} = await $api.put(`/${res}/${par.id}`, { ...par.data });
+		return { data: formatObjId(card) };
 	},
 	delete: async (res, par) => {
-		const { json } = await httpClientWithToken(
-			`${import.meta.env.VITE_SIMPLE_REST_URL}/${res}/${par.id}`,
-			{
-				method: "DELETE"
-			}
-		);
-
-		return { data: formatObjId(json.card) };
+		const {
+			data: { card }
+		} = await $api.delete(`/${res}/${par.id}`);
+		return { data: formatObjId(card) };
 	},
 	deleteMany: async (res, par) => {
-		const { json } = await httpClientWithToken(
-			`${import.meta.env.VITE_SIMPLE_REST_URL}/${res}/many/${JSON.stringify(
-				par.ids
-			)}`,
-			{
-				method: "DELETE"
-			}
-		);
+		const url = `/${res}/many/${JSON.stringify(par.ids)}`;
 
-		return { data: formatObjId(json.ids) };
-	}
+		const {
+			data: { ids }
+		} = await $api.delete(url);
+
+		return { data: formatObjId(ids) };
+	},
+	getManyReference: async (res, par) => {},
+	updateMany: async (res, par) => {}
 };
 
 export const dataProvider = withLifecycleCallbacks(provider, [

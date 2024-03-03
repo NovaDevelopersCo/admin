@@ -9,7 +9,12 @@ import { CardEdit } from "./CardEdit";
 
 export const App = () => {
 	return (
-		<Admin dataProvider={dataProvider} authProvider={authProvider} title="Alco">
+		<Admin
+			dataProvider={dataProvider}
+			authProvider={authProvider}
+			title="Alco"
+			requireAuth
+		>
 			<Resource
 				name="cards"
 				list={CardList}
