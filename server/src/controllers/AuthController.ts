@@ -43,18 +43,9 @@ export class AuthController {
 				return ApiError.badRequest("Please, fill in all the fields");
 			}
 
-			const { accessToken, refreshToken } = await AuthService.registration(
-				login,
-				password
-			);
+			await AuthService.registration(login, password);
 
-			res.cookie("refreshToken", refreshToken, {
-				maxAge: 1000 * 60 * 60 * 24 * 30,
-				httpOnly: true,
-				path: "/api/auth"
-			});
-
-			return res.json({ accessToken });
+			return res.json({ message: "ok" });
 		} catch (e) {
 			next(e);
 		}

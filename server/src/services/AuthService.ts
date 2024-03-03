@@ -33,23 +33,15 @@ export class AuthService {
 	static async registration(login: string, password: string) {
 		const users = await UserModel.find();
 
-		// if (users.length > 0) {
-		// 	throw ApiError.badRequest(`Can't registration more users`);
-		// }
+		if (users.length > 0) {
+			throw ApiError.badRequest(`Can't registration more users`);
+		}
 
 		const hashPassword = await bcrypt.hash(password, 7);
 
 		const newUser = new UserModel({ login, password: hashPassword });
 
 		await newUser.save();
-
-		const userDto = new UserDto(newUser);
-
-		const tokens = TokenService.generateTokens(userDto);
-
-		await TokenService.saveToken(tokens.refreshToken, newUser._id);
-
-		return { ...tokens };
 	}
 
 	static async logout(refreshToken: string) {
