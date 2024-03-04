@@ -9,9 +9,9 @@ env:
     PASSWORD: ${{secrets.DOCKER_PASSWORD}}
     SERVER_NAME: ${{secrets.DOCKER_SERVER_NAME}}
     VITE_SIMPLE_REST_URL: ${{secrets.VITE_SIMPLE_REST_URL}}
-    SSH_KEY: ${{secrets.SSH_KEY}}
     SSH_USERNAME: ${{secrets.SSH_USERNAME}}
     SSH_HOST: ${{secrets.SSH_HOST}}
+    SSH_PASSWORD: ${{secrets.SSH_PASSWORD}}
 
 jobs:
     server_build: 
@@ -48,7 +48,7 @@ jobs:
               with:
                 host: ${{env.SSH_HOST}}
                 username: ${{env.SSH_USERNAME}}
-                key: ${{env.SSH_KEY}}
+                password: ${{env.SSH_PASSWORD}}
                 script: whoami
 
             
