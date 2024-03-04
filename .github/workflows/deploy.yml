@@ -40,7 +40,7 @@ jobs:
               host: ${{env.SSH_HOST}}
               username: ${{env.SSH_USERNAME}}
               password: ${{env.SSH_PASSWORD}}
-              script: bash deploy.sh
+              script: bash deploy-alco-admin.sh
 
     client_build_deploy:
       runs-on: ubuntu-latest
