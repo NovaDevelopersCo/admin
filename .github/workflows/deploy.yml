@@ -63,5 +63,5 @@ jobs:
             host: ${{env.SSH_HOST}}
             username: ${{env.SSH_USERNAME}}
             password: ${{env.SSH_PASSWORD}}
-            source: "dist/index.html"
+            source: "client/dist/*"
             target: "/var/www/html/alco/admin"
