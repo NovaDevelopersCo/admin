@@ -56,20 +56,24 @@ jobs:
           run: npm run build
           env: 
             VITE_SIMPLE_REST_URL: ${{env.VITE_SIMPLE_REST_URL}}
-        - name:
-          run: |
-            mkdir ../build
-            cp -TR dist ../build
-            tar -cvf deploy.tar ../build/
+        - name: get folder content
+          run: ls
+          
+        # - name:
+        #   run: |
+        #     mkdir ../build
+        #     cp -TR dist ../build
+        #     tar -cvf deploy.tar ../build/
 
-        - name: uppdate file on server
-          uses: appleboy/scp-action@v0.1.7
-          with:
-            host: ${{env.SSH_HOST}}
-            username: ${{env.SSH_USERNAME}}
-            password: ${{env.SSH_PASSWORD}}
-            source: "deploy.tar"
-            target: /var/www/html/alco/admin
+        # - name: uppdate file on server
+        #   uses: appleboy/scp-action@v0.1.7
+        #   with:
+        #     host: ${{env.SSH_HOST}}
+        #     username: ${{env.SSH_USERNAME}}
+        #     password: ${{env.SSH_PASSWORD}}
+        #     source: "deploy.tar"
+        #     target: /var/www/html/alco/admin
+
         
 
 
