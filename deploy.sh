@@ -9,3 +9,5 @@ echo "start docker server"
 make start
 
 
+echo "delete old client version"
+sudo rm -rf /var/www/html/alco/admin
