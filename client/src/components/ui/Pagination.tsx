@@ -5,6 +5,6 @@ export const CustomPagination = () => (
 		<h3 className="p-[3px] pl-[15px] text-[13px] font-bold opacity-40">
 			NovaDev Template
 		</h3>
-		<Pagination rowsPerPageOptions={[10, 25, 50, 100]} />
+		<Pagination rowsPerPageOptions={[5, 10, 25]} />
 	</div>
 );

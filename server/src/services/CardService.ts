@@ -39,7 +39,7 @@ export class CardService {
 		// 			: b[sortField].localeCompare(a[sortField])
 		// 	)
 
-		const splicedCards = filteredByTitle.slice(+filterStart, +filterEnd);
+		const splicedCards = filteredByTitle.slice(+filterStart, +filterEnd + 1);
 
 		return {
 			cards: Array.isArray(splicedCards) ? splicedCards : [],

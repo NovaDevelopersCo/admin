@@ -7,5 +7,5 @@ export const logout = async () => {
 		alert(logoutResult || "logout error");
 	}
 
-	window.location.href = "/login";
+	window.location.reload();
 };
