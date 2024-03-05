@@ -2,11 +2,11 @@ import { Admin, Resource } from "react-admin";
 import { dataProvider } from "../providers/dataProvider";
 import { authProvider } from "../providers/authProvider";
 
-import { CardList } from "./CardList";
-import { CardCreate } from "./CardCreate";
-import { CardShow } from "./CardShow";
-import { CardEdit } from "./CardEdit";
-import { LogoutButton } from "./LogoutButton";
+import { CardList } from "./card/CardList";
+import { CardCreate } from "./card/CardCreate";
+import { CardShow } from "./card/CardShow";
+import { CardEdit } from "./card/CardEdit";
+import { LogoutButton } from "./ui/LogoutButton";
 import { UserMenu } from "react-admin";
 import { AppBar } from "react-admin";
 import { Layout } from "react-admin";

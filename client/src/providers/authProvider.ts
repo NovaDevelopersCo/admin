@@ -21,7 +21,6 @@ export const authProvider: AuthProvider = {
 		const { accessToken } = useAuthStore.getState();
 
 		if (!accessToken) {
-			console.log("refresh");
 			const isAuth = await AuthService.refresh();
 
 			if (!isAuth) {
