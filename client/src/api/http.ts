@@ -34,6 +34,10 @@ $api.interceptors.response.use(
 			}
 		}
 
+		if (e._isRetry) {
+			useAuthStore.getState().setAccessToken("");
+		}
+
 		throw e;
 	}
 );

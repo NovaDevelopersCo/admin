@@ -16,15 +16,7 @@ export const authProvider: AuthProvider = {
 
 		return Promise.resolve();
 	},
-	logout: async () => {
-		const logoutResult = await AuthService.logout();
-
-		if (typeof logoutResult === "string" || !logoutResult) {
-			return Promise.reject(logoutResult);
-		}
-
-		return Promise.resolve();
-	},
+	logout: async () => {},
 	checkAuth: async () => {
 		const { accessToken } = useAuthStore.getState();
 
@@ -33,7 +25,7 @@ export const authProvider: AuthProvider = {
 			const isAuth = await AuthService.refresh();
 
 			if (!isAuth) {
-				return Promise.reject("Please, reload the page");
+				return Promise.reject({ message: false });
 			}
 		}
 

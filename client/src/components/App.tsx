@@ -6,10 +6,25 @@ import { CardList } from "./CardList";
 import { CardCreate } from "./CardCreate";
 import { CardShow } from "./CardShow";
 import { CardEdit } from "./CardEdit";
+import { LogoutButton } from "./LogoutButton";
+import { UserMenu } from "react-admin";
+import { AppBar } from "react-admin";
+import { Layout } from "react-admin";
+
+const MyUserMenu = () => (
+	<UserMenu>
+		<LogoutButton />
+	</UserMenu>
+);
+
+const MyAppBar = () => <AppBar userMenu={<MyUserMenu />} />;
+
+const MyLayout = (props: any) => <Layout {...props} appBar={MyAppBar} />;
 
 export const App = () => {
 	return (
 		<Admin
+			layout={MyLayout}
 			dataProvider={dataProvider}
 			authProvider={authProvider}
 			title="Alco"
