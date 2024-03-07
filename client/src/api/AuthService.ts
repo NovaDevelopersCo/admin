@@ -2,11 +2,9 @@ import { $api } from "./http";
 
 import axios, { type AxiosError } from "axios";
 
-import { useAuthStore } from "../store/auth";
+import { useAuthStore } from "../store";
 
-import type { TAuthForm } from "../types/types";
-
-import type { TUser } from "../types/types";
+import type { TAuthForm, TUser } from "../types/types";
 
 export class AuthService {
 	static async login(user: TAuthForm) {

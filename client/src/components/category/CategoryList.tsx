@@ -1,19 +1,19 @@
 import {
 	List,
-	TextField,
 	DatagridConfigurable,
+	TextField,
 	ImageField,
+	WrapperField,
 	EditButton,
-	ShowButton,
-	WrapperField
+	ShowButton
 } from "react-admin";
 
-import { Pagination, Filters, Actions } from "../ui";
+import { Actions, Filters, Pagination } from "../ui";
 
-export const CardList = () => {
+export const CategoryList = () => {
 	return (
 		<List
-			resource="cards"
+			resource="categories"
 			actions={<Actions />}
 			filters={Filters}
 			pagination={<Pagination />}
@@ -21,9 +21,7 @@ export const CardList = () => {
 			<DatagridConfigurable>
 				<TextField source="name" />
 				<TextField source="description" />
-				<TextField source="price" />
-				<TextField source="count" />
-				<ImageField source="image" className="max-w-[100px]" />
+				<ImageField className="max-w-[100px]" source="image" />
 				<WrapperField label="Actions">
 					<EditButton />
 					<ShowButton />

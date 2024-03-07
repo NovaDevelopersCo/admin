@@ -1,13 +1,13 @@
-import { Show, SimpleShowLayout, TextField, ImageField } from "react-admin";
+import { ImageField, SimpleShowLayout, TextField, Show } from "react-admin";
+import { CategoryOptions } from "./CategoryOptions";
 
-export const CardShow = () => {
+export const CategoryShow = () => {
 	return (
 		<Show>
 			<SimpleShowLayout>
 				<TextField source="name" />
 				<TextField source="description" />
-				<TextField source="price" />
-				<TextField source="count" />
+				<CategoryOptions isShow />
 				<ImageField source="image" className="max-w-[100px]" />
 			</SimpleShowLayout>
 		</Show>

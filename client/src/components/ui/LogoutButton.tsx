@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import MenuItem from "@mui/material/MenuItem";
 import ExitIcon from "@mui/icons-material/PowerSettingsNew";
 
-import { logout } from "../../utils/logout";
+import { logout } from "../../utils";
 
 export const LogoutButton = forwardRef((props, ref: any) => {
 	const handleClick = async () => logout();

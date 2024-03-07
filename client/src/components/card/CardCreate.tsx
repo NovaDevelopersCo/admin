@@ -1,6 +1,6 @@
 import {
 	Create,
-	ImageInput,
+	ReferenceInput,
 	SimpleForm,
 	TextInput,
 	maxLength,
@@ -10,12 +10,21 @@ import {
 	required
 } from "react-admin";
 
+import { capitalizeString } from "../../utils";
+
+import { useState } from "react";
+
+import { ImageChange } from "../ui";
+import { CardCategorySelect } from "./CardCategorySelect";
+
 export const CardCreate = () => {
+	const [options, setOptions] = useState<string[]>([]);
+
 	return (
 		<Create>
 			<SimpleForm>
 				<TextInput
-					source="title"
+					source="name"
 					validate={[required(), maxLength(50)]}
 					fullWidth
 				/>
@@ -32,12 +41,24 @@ export const CardCreate = () => {
 					fullWidth
 					validate={[number(), minValue(0), maxValue(999)]}
 				/>
-				<ImageInput
+				<ReferenceInput source="category" reference="categories">
+					<CardCategorySelect setOptions={setOptions} />
+				</ReferenceInput>
+				<ImageChange
 					validate={required()}
 					source="image"
 					label="Image"
 					fullWidth
 				/>
+				{options.map((i) => (
+					<TextInput
+						source={i}
+						label={capitalizeString(i)}
+						key={i}
+						fullWidth
+						validate={[required(), maxLength(10)]}
+					/>
+				))}
 			</SimpleForm>
 		</Create>
 	);

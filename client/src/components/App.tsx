@@ -1,15 +1,9 @@
-import { Admin, Resource } from "react-admin";
-import { dataProvider } from "../providers/dataProvider";
-import { authProvider } from "../providers/authProvider";
-
-import { CardList } from "./card/CardList";
-import { CardCreate } from "./card/CardCreate";
-import { CardShow } from "./card/CardShow";
-import { CardEdit } from "./card/CardEdit";
-import { LogoutButton } from "./ui/LogoutButton";
-import { UserMenu } from "react-admin";
-import { AppBar } from "react-admin";
-import { Layout } from "react-admin";
+import { Admin, Resource, TitlePortal } from "react-admin";
+import { dataProvider, authProvider } from "../providers";
+import { CardList, CardCreate, CardShow, CardEdit } from "./card";
+import { LogoutButton } from "./ui";
+import { UserMenu, AppBar, Layout } from "react-admin";
+import { CategoryList, CategoryEdit, CategoryShow } from "./category";
 
 const MyUserMenu = () => (
 	<UserMenu>
@@ -17,9 +11,15 @@ const MyUserMenu = () => (
 	</UserMenu>
 );
 
-const MyAppBar = () => <AppBar userMenu={<MyUserMenu />} />;
+const MyAppBar = () => (
+	<AppBar userMenu={<MyUserMenu />}>
+		<TitlePortal />
+	</AppBar>
+);
 
-const MyLayout = (props: any) => <Layout {...props} appBar={MyAppBar} />;
+const MyLayout = (props: any) => {
+	return <Layout {...props} appBar={MyAppBar} />;
+};
 
 export const App = () => {
 	return (
@@ -36,6 +36,12 @@ export const App = () => {
 				create={CardCreate}
 				show={CardShow}
 				edit={CardEdit}
+			/>
+			<Resource
+				name="categories"
+				show={CategoryShow}
+				list={CategoryList}
+				edit={CategoryEdit}
 			/>
 		</Admin>
 	);

@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { AuthService } from "./AuthService";
 
-import { useAuthStore } from "../store/auth";
+import { useAuthStore } from "../store";
 
 const $api = axios.create({
 	withCredentials: true,

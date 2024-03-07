@@ -6,20 +6,20 @@ import {
 	maxLength,
 	number,
 	minValue,
-	maxValue,
-	ImageInput
+	maxValue
 } from "react-admin";
+
+import { ImageChange } from "../ui";
 
 export const CardEdit = () => {
 	return (
 		<Edit>
 			<SimpleForm>
 				<TextInput
-					source="title"
+					source="name"
 					validate={[required(), maxLength(50)]}
 					fullWidth
 				/>
-				<TextInput source="description" label="Description" fullWidth />
 				<TextInput
 					source="price"
 					validate={[number(), minValue(0), maxValue(9999)]}
@@ -32,12 +32,7 @@ export const CardEdit = () => {
 					fullWidth
 					validate={[number(), minValue(0), maxValue(999)]}
 				/>
-				<ImageInput
-					validate={required()}
-					source="image"
-					label="Image"
-					fullWidth
-				/>
+				<ImageChange validate={required()} source="image" label="Image" />
 			</SimpleForm>
 		</Edit>
 	);
