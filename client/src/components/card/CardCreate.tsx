@@ -44,12 +44,7 @@ export const CardCreate = () => {
 				<ReferenceInput source="category" reference="categories">
 					<CardCategorySelect setOptions={setOptions} />
 				</ReferenceInput>
-				<ImageChange
-					validate={required()}
-					source="image"
-					label="Image"
-					fullWidth
-				/>
+				<ImageChange validate={required()} source="image" label="Image" />
 				{options.map((i) => (
 					<TextInput
 						source={i}

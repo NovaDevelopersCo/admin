@@ -14,7 +14,7 @@ export const CategoryList = () => {
 	return (
 		<List
 			resource="categories"
-			actions={<Actions />}
+			actions={<Actions noCreate />}
 			filters={Filters}
 			pagination={<Pagination />}
 		>

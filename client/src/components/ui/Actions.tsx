@@ -1,10 +1,10 @@
 import { TopToolbar, SelectColumnsButton, CreateButton } from "react-admin";
 
-export const Actions = () => {
+export const Actions = ({ noCreate }: { noCreate?: boolean }) => {
 	return (
 		<TopToolbar>
 			<SelectColumnsButton />
-			<CreateButton />
+			{!noCreate && <CreateButton />}
 		</TopToolbar>
 	);
 };
