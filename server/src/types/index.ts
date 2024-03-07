@@ -8,11 +8,16 @@ declare global {
 
 export type TCard = {
 	_id: string;
-	image: string;
 	price: string;
-	description: string;
-	title: string;
+	name: string;
 	count: string;
+	diameter: string;
+	length: string;
+	width: string;
+	thickness: string;
+	size: string;
+	orderCount: string;
+	category: string;
 };
 
 export type TUser = {
@@ -25,4 +30,12 @@ export type TSession = {
 	_id: string;
 	user: string;
 	refreshToken: string;
+};
+
+export type TCategory = {
+	_id: string;
+	image: string;
+	name: string;
+	options: string[];
+	description: string;
 };

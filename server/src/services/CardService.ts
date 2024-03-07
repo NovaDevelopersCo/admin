@@ -30,7 +30,7 @@ export class CardService {
 		const allCards = await CardModel.find();
 
 		const filteredByTitle = title
-			? allCards.filter((i) => i.title.includes(title))
+			? allCards.filter((i) => i.name.includes(title))
 			: allCards;
 
 		// .sort((a, b) =>
@@ -48,30 +48,25 @@ export class CardService {
 	}
 
 	static async getMany(filter?: { ids: string[] }) {
-		if (!filter) {
+		if (!filter || !filter.ids) {
 			return [];
 		}
 
 		const cards = await CardModel.find({ _id: { $in: filter.ids } });
 
-		const formattedCards = cards;
-
-		return Array.isArray(formattedCards) ? formattedCards : [];
+		return Array.isArray(cards) ? cards : [];
 	}
 
 	static async getManyReference() {}
 
 	static async create(card: Omit<TCard, "_id">) {
-		const candidate = await CardModel.findOne({ title: card.title });
+		const candidate = await CardModel.findOne({ title: card.name });
 
 		if (candidate) {
 			throw ApiError.badRequest("Title is busy!");
 		}
 
 		const newCard = new CardModel({ ...card });
-		const image = await ImageService.upload(card.image, newCard._id);
-
-		newCard.image = image;
 
 		await newCard.save();
 
@@ -103,19 +98,10 @@ export class CardService {
 	}
 
 	static async update(card: TCard, id: string) {
-		const { image, ...data } = card;
-
 		const candidate = await CardModel.findById(id);
 
 		if (!candidate) {
 			throw ApiError.badRequest("Card not found");
-		}
-
-		Object.assign(candidate, data);
-
-		if (image) {
-			const imageUrl = await ImageService.upload(image, candidate._id);
-			candidate.image = imageUrl;
 		}
 
 		await candidate.save();

@@ -7,6 +7,8 @@ import { TokenService } from "./TokenService";
 import { UserDto } from "../dtos/UserDto";
 import { SessionModel } from "../models/Session";
 
+import { CategoryModel } from "../models/Category";
+
 export class AuthService {
 	static async login(login: string, password: string) {
 		const user = await UserModel.findOne({ login });

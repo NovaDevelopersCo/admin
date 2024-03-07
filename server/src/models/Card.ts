@@ -3,11 +3,16 @@ import { Schema, model } from "mongoose";
 import type { TCard } from "../types";
 
 const card = new Schema<TCard>({
-	title: { type: String, required: true, unique: true },
-	description: { type: String },
+	name: { type: String, required: true, unique: true },
 	price: { type: String, default: "0" },
 	count: { type: String, default: "0" },
-	image: { type: String, required: true }
+	diameter: { type: String },
+	length: { type: String },
+	width: { type: String },
+	thickness: { type: String },
+	size: { type: String },
+	orderCount: { type: String },
+	category: { type: String, ref: "Category", required: true }
 });
 
 export const CardModel = model<TCard>("Card", card);

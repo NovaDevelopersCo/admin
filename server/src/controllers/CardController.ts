@@ -17,7 +17,7 @@ export class CardController {
 
 			const card = await CardService.getOne(id);
 
-			return res.json({ card });
+			return res.json({ data: card });
 		} catch (e) {
 			next(e);
 		}
@@ -34,7 +34,7 @@ export class CardController {
 			const { cards, total } = await CardService.getList(title, sort, range);
 
 			return res.json({
-				cards,
+				data: cards,
 				total
 			});
 		} catch (e) {
@@ -48,7 +48,7 @@ export class CardController {
 
 			const cards = await CardService.getMany(filter);
 
-			return res.json({ cards });
+			return res.json({ data: cards });
 		} catch (e) {
 			next(e);
 		}
@@ -60,15 +60,15 @@ export class CardController {
 
 			const fields = req.body as Omit<TCard, "_id">;
 
-			const { title, image, description } = fields;
+			const { name } = fields;
 
-			if (!title || !image || !description) {
+			if (!name) {
 				throw ApiError.badRequest("Please, fill in all the fields");
 			}
 
 			const card = await CardService.create(fields);
 
-			return res.json({ card });
+			return res.json({ data: card });
 		} catch (e) {
 			next(e);
 		}
@@ -84,7 +84,7 @@ export class CardController {
 
 			const card = await CardService.delete(id);
 
-			return res.json({ card });
+			return res.json({ data: card });
 		} catch (e) {
 			next(e);
 		}
@@ -94,7 +94,7 @@ export class CardController {
 		try {
 			getValidationErrors(req);
 
-			const fields = req.body as TCard & {
+			const body = req.body as TCard & {
 				isImageUpdated: boolean;
 			};
 
@@ -104,15 +104,13 @@ export class CardController {
 				throw ApiError.badRequest("Param id is empty");
 			}
 
-			const { title, description } = fields;
-
-			if (!title || !description) {
+			if (!body.name) {
 				throw ApiError.badRequest("Please, fill in all the fields");
 			}
 
-			const card = await CardService.update(fields, id);
+			const card = await CardService.update(body, id);
 
-			return res.json({ card });
+			return res.json({ data: card });
 		} catch (e) {
 			next(e);
 		}
