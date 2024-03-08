@@ -4,3 +4,4 @@ export { capitalizeString } from "./capitalizeString";
 export { classNames } from "./classNames";
 export { formatTitle } from "./formatTitle";
 export { logout } from "./logout";
+export { formatDescription } from "./formatDescription";

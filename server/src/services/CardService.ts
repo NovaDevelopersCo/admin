@@ -14,36 +14,32 @@ export class CardService {
 		return card;
 	}
 
-	static async getList(
-		unpArsedTitle: string,
-		sort: ["price" | "description" | "title" | "count" | "id", string],
-		range: string
-	) {
-		const [field, sortOrder] = sort;
+	static async getList(unpArsedTitle: string, range: string, sort: string) {
+		const [sortBy, sortOrder] = sort ? JSON.parse(sort) : [];
+		// [
+		// 	"price" | "name" | "count" | "id",
+		// 	"ASC" | "DESC"
+		// ];
 
-		const title = unpArsedTitle ? JSON.parse(unpArsedTitle) : "";
+		const q = unpArsedTitle ? JSON.parse(unpArsedTitle) : "";
 
-		const sortField = field === "id" ? "_id" : field;
+		const [filterStart, filterEnd] = range ? JSON.parse(range) : [];
 
-		const [filterStart, filterEnd] = JSON.parse(range);
+		let items = await CardModel.find();
+		let total;
 
-		const allCards = await CardModel.find();
+		if (q) {
+			items = items.filter((i) => i.name.includes(q));
+			total = items.length;
+		}
 
-		const filteredByTitle = title
-			? allCards.filter((i) => i.name.includes(title))
-			: allCards;
-
-		// .sort((a, b) =>
-		// 		sortOrder === "ASC"
-		// 			? a[sortField].localeCompare(b[sortField])
-		// 			: b[sortField].localeCompare(a[sortField])
-		// 	)
-
-		const splicedCards = filteredByTitle.slice(+filterStart, +filterEnd + 1);
+		if (filterStart && filterEnd) {
+			items = items.slice(+filterStart, +filterEnd + 1);
+		}
 
 		return {
-			cards: Array.isArray(splicedCards) ? splicedCards : [],
-			total: filteredByTitle.length
+			items,
+			total: total ?? items.length
 		};
 	}
 
@@ -54,10 +50,8 @@ export class CardService {
 
 		const cards = await CardModel.find({ _id: { $in: filter.ids } });
 
-		return Array.isArray(cards) ? cards : [];
+		return cards;
 	}
-
-	static async getManyReference() {}
 
 	static async create(card: Omit<TCard, "_id">) {
 		const candidate = await CardModel.findOne({ title: card.name });

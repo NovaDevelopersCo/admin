@@ -15,7 +15,7 @@ cardRoutes.post(
 	"/",
 	[
 		AuthMiddleware,
-		body("title")
+		body("name")
 			.isLength({ max: 50 })
 			.withMessage(`Title can't be longer, than 50 symbols`),
 		body("price")
@@ -33,7 +33,7 @@ cardRoutes.put(
 	"/:id",
 	[
 		AuthMiddleware,
-		body("title")
+		body("name")
 			.isLength({ max: 50 })
 			.withMessage(`Title can't be longer, than 50 symbols`),
 		body("price")

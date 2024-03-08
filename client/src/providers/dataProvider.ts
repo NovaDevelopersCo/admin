@@ -35,7 +35,7 @@ const provider: DataProvider = {
 		const query = {
 			sort: JSON.stringify([field, order]),
 			range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
-			title: JSON.stringify(par.filter.q)
+			q: JSON.stringify(par.filter.q)
 		};
 
 		const url = `/${res}?${qs.stringify(query)}`;
@@ -81,18 +81,7 @@ const provider: DataProvider = {
 
 export const dataProvider = withLifecycleCallbacks(provider, [
 	{
-		resource: "cards",
-		beforeCreate: async (params, dataProvider: DataProvider) => {
-			const image = await convertToBase64(params.data.image);
-
-			return {
-				...params,
-				data: {
-					...params.data,
-					image
-				}
-			};
-		},
+		resource: "categories",
 		beforeUpdate: async (params, dataProvider: DataProvider) => {
 			const { image, ...data } = params.data;
 

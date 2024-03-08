@@ -4,6 +4,7 @@ import { CardList, CardCreate, CardShow, CardEdit } from "./card";
 import { LogoutButton } from "./ui";
 import { UserMenu, AppBar, Layout } from "react-admin";
 import { CategoryList, CategoryEdit, CategoryShow } from "./category";
+import { QueryClient } from "react-query";
 
 const MyUserMenu = () => (
 	<UserMenu>
@@ -22,6 +23,15 @@ const MyLayout = (props: any) => {
 };
 
 export const App = () => {
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				refetchOnWindowFocus: false,
+				keepPreviousData: true
+			}
+		}
+	});
+
 	return (
 		<Admin
 			layout={MyLayout}
@@ -29,6 +39,7 @@ export const App = () => {
 			authProvider={authProvider}
 			title="Alco"
 			requireAuth
+			queryClient={queryClient}
 		>
 			<Resource
 				name="cards"

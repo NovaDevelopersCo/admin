@@ -21,7 +21,8 @@ module.exports = {
 			}
 		},
 		backgroundColor: {
-			optionItem: "rgba(0, 0, 0, 0.08)"
+			optionItem: "rgba(0, 0, 0, 0.08)",
+			inputBg: "#f5f5f5"
 		}
 	},
 

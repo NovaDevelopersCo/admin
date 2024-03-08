@@ -2,12 +2,16 @@ import { useRecordContext } from "react-admin";
 
 import { classNames } from "../../utils";
 
+import { Typography } from "../ui";
+
+const { Text } = Typography;
+
 export const CategoryOptions = ({ isShow }: { isShow: boolean }) => {
 	const record = useRecordContext();
 
 	return (
 		<div className={classNames(isShow ? "mb-[10px]" : "mb-[30px]")}>
-			<p className="text-[0.75em] text-inputTitle mb-[0.2em]">Options:</p>
+			<Text>Options:</Text>
 			<ul className="flex gap-x-[10px]">
 				{(record && record.options ? record.options : []).map((i: string) => (
 					<li

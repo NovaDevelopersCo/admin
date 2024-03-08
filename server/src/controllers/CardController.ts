@@ -25,16 +25,16 @@ export class CardController {
 
 	static async getList(req: Request, res: Response, next: NextFunction) {
 		try {
-			const { title, range, sort } = req.query as {
-				title: string;
+			const { q, range, sort } = req.query as {
+				q: string;
 				range: string;
-				sort: ["price" | "description" | "title" | "count" | "id", string];
+				sort: string;
 			};
 
-			const { cards, total } = await CardService.getList(title, sort, range);
+			const { items, total } = await CardService.getList(q, range, sort);
 
 			return res.json({
-				data: cards,
+				data: items,
 				total
 			});
 		} catch (e) {

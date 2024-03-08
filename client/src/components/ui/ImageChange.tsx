@@ -9,9 +9,14 @@ export const ImageChange = (props: ImageInputProps) => {
 		<>
 			<ImageInput
 				{...props}
-				accept="image/png,image/svg+xml,image/jpg,image/jpeg"
-				maxSize={10000000}
-				onChange={(e) => setImage(e)}
+				accept="image/png,image/jpg,image/jpeg,image/webp"
+				maxSize={3000000}
+				onChange={(e) => {
+					if (!e) {
+						alert("Only jpg, jpeg, png, webp. Max size 3mb");
+					}
+					setImage(e);
+				}}
 			>
 				{image && (
 					<ImageField className="max-w-[100px]" source="src" title="preview" />

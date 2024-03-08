@@ -19,9 +19,9 @@ export const CardList = () => {
 			pagination={<Pagination />}
 		>
 			<DatagridConfigurable>
-				<TextField source="name" />
+				<TextField source="name" sortable />
 				<TextField source="description" />
-				<TextField source="price" />
+				<TextField source="price" sortable />
 				<TextField source="count" />
 				<ImageField source="image" className="max-w-[100px]" />
 				<WrapperField label="Actions">
