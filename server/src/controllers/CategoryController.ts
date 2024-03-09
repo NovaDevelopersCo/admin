@@ -21,6 +21,18 @@ export class CategoryController {
 		}
 	}
 
+	static async getMany(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { filter } = req.query as { filter: { ids: string[] } };
+
+			const cards = await CategoryService.getMany(filter);
+
+			return res.json({ data: cards });
+		} catch (e) {
+			next(e);
+		}
+	}
+
 	static async getOne(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { id } = req.params as { id: string };

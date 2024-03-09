@@ -6,7 +6,7 @@ export class ImageService {
 		try {
 			const res = await cloudinary.uploader.upload(image, {
 				public_id: cardName,
-				folder: "alco/cards"
+				folder: "metall/cards"
 			});
 
 			return res.secure_url;

@@ -1,3 +1,4 @@
+export { getValidationError } from "./getValidationError";
 export { formatObjId } from "./formatObjId";
 export { convertToBase64 } from "./convertToBase64";
 export { capitalizeString } from "./capitalizeString";

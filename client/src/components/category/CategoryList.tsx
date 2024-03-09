@@ -20,6 +20,7 @@ export const CategoryList = () => {
 		>
 			<DatagridConfigurable
 				rowClick={(id, resource) => `/${resource}/${id}/show`}
+				bulkActionButtons={false}
 			>
 				<TextField source="name" />
 				<ImageField className="max-w-[100px]" source="image" sortable={false} />

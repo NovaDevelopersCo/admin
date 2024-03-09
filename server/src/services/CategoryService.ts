@@ -36,6 +36,16 @@ export class CategoryService {
 		return { items, total: total ?? items.length };
 	}
 
+	static async getMany(filter?: { ids: string[] }) {
+		if (!filter || !filter.ids) {
+			return [];
+		}
+
+		const categories = await CategoryModel.find({ _id: { $in: filter.ids } });
+
+		return categories;
+	}
+
 	static async getOne(id: string) {
 		const category = await CategoryModel.findById(id);
 

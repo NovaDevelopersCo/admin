@@ -1,20 +1,24 @@
-import { classNames } from "../../utils";
+import { classNames, getValidationError } from "../../utils";
 import { Typography } from "./Typography";
 
-import { useInput } from "react-admin";
+import { useInput, type InputProps } from "react-admin";
 
 const { Text } = Typography;
 
-export const TextArea = ({
-	source,
-	className
-}: {
-	source: string;
-	className?: string;
-}) => {
-	const { id, field, fieldState } = useInput({ source });
+export const TextArea = (
+	props: InputProps & {
+		className?: string;
+	}
+) => {
+	const {
+		id,
+		field,
+		fieldState: { error }
+	} = useInput({
+		...props
+	});
 
-	const textAreaClasses = classNames("w-full", className ?? "");
+	const textAreaClasses = classNames("w-full mb-[25px]", props.className ?? "");
 
 	return (
 		<div className={textAreaClasses}>
@@ -22,9 +26,13 @@ export const TextArea = ({
 			<textarea
 				id={id}
 				{...field}
-				className="bg-[#f5f5f5] resize-none w-full h-[250px] mb-[30px] p-[10px] "
-			></textarea>
-			{fieldState.error && <span>{fieldState.error.message}</span>}
+				className="bg-[#f5f5f5] resize-none w-full h-[250px] p-[10px] "
+			/>
+			{!!error && (
+				<p className="text-[#d32f2f] ml-[5px] text-[12px]">
+					{getValidationError(error.message)?.message}
+				</p>
+			)}
 		</div>
 	);
 };
