@@ -8,7 +8,7 @@ import { CategoryOptions } from "./CategoryOptions";
 export const CategoryEdit = () => {
 	return (
 		<Edit title={<PageTitle />}>
-			<SimpleForm toolbar={<EditToolbar />} onChange={(e) => console.log(e)}>
+			<SimpleForm toolbar={<EditToolbar />}>
 				<TextArea source="description" />
 				<CategoryOptions isShow={false} />
 				<ImageChange source="image" label="Image" validate={[required()]} />

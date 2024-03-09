@@ -5,3 +5,4 @@ export { classNames } from "./classNames";
 export { formatTitle } from "./formatTitle";
 export { logout } from "./logout";
 export { formatDescription } from "./formatDescription";
+export { getMegabyteSize } from "./getMegabyteSize";
