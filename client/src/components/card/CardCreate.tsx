@@ -14,8 +14,8 @@ import { capitalizeString } from "../../utils";
 
 import { useState } from "react";
 
-import { ImageChange } from "../ui";
 import { CardCategorySelect } from "./CardCategorySelect";
+import { isIntegerNumberValidation } from "../../utils";
 
 export const CardCreate = () => {
 	const [options, setOptions] = useState<string[]>([]);
@@ -28,10 +28,15 @@ export const CardCreate = () => {
 					validate={[required(), maxLength(50)]}
 					fullWidth
 				/>
-				<TextInput source="description" label="Description" fullWidth />
 				<TextInput
 					source="price"
-					validate={[number(), minValue(0), maxValue(9999)]}
+					validate={[
+						number(),
+						minValue(0),
+						maxValue(9999),
+						required(),
+						isIntegerNumberValidation
+					]}
 					label="Price"
 					fullWidth
 				/>
@@ -39,19 +44,23 @@ export const CardCreate = () => {
 					source="count"
 					label="Count"
 					fullWidth
-					validate={[number(), minValue(0), maxValue(999)]}
+					validate={[
+						number(),
+						minValue(0),
+						maxValue(999),
+						isIntegerNumberValidation
+					]}
 				/>
 				<ReferenceInput source="category" reference="categories">
 					<CardCategorySelect setOptions={setOptions} />
 				</ReferenceInput>
-				<ImageChange validate={required()} source="image" label="Image" />
 				{options.map((i) => (
 					<TextInput
 						source={i}
 						label={capitalizeString(i)}
 						key={i}
 						fullWidth
-						validate={[required(), maxLength(10)]}
+						validate={[maxLength(5), isIntegerNumberValidation]}
 					/>
 				))}
 			</SimpleForm>

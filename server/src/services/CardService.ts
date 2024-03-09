@@ -2,6 +2,8 @@ import { CardModel } from "../models/Card";
 import { ApiError } from "../utils/ApiError";
 import type { TCard } from "../types";
 import { ImageService } from "./ImageService";
+import { CategoryModel } from "../models/Category";
+import { isIntegerNumberValidation } from "../utils/isIntegerNumberValidation";
 
 export class CardService {
 	static async getOne(id: string) {
@@ -53,14 +55,39 @@ export class CardService {
 		return cards;
 	}
 
-	static async create(card: Omit<TCard, "_id">) {
-		const candidate = await CardModel.findOne({ title: card.name });
+	static async create(
+		card: Omit<TCard, "_id" | "orderCount"> & { [key: string]: string }
+	) {
+		const { price, name, count, category } = card;
+
+		const candidate = await CardModel.findOne({ name });
 
 		if (candidate) {
 			throw ApiError.badRequest("Title is busy!");
 		}
 
-		const newCard = new CardModel({ ...card });
+		const categoryCandidate = await CategoryModel.findById(category);
+
+		if (!categoryCandidate) {
+			throw ApiError.badRequest("Category not found");
+		}
+
+		const newCard = new CardModel({ price, name, count, category });
+
+		const { options } = categoryCandidate;
+
+		const cardFieldsArr = Object.keys(CardModel.schema.obj);
+
+		const optionsObj: { [key: string]: string } = {};
+
+		options.map((o) => {
+			if (cardFieldsArr.includes(o)) {
+				isIntegerNumberValidation(card[o], o);
+				optionsObj[o] = card[o];
+			}
+		});
+
+		Object.assign(newCard, optionsObj);
 
 		await newCard.save();
 
@@ -74,7 +101,7 @@ export class CardService {
 			throw ApiError.badRequest("Card not found");
 		}
 
-		const { result } = await ImageService.remove(`alco/cards/${id}`);
+		const { result } = await ImageService.remove(`metall/cards/${id}`);
 
 		if (result !== "ok") {
 			throw ApiError.badRequest(result);
@@ -107,7 +134,7 @@ export class CardService {
 		const ids = JSON.parse(unParsedIds) as string[];
 
 		const deleteCards = ids.map(async (id) => {
-			const { result } = await ImageService.remove(`alco/cards/${id}`);
+			const { result } = await ImageService.remove(`metall/cards/${id}`);
 
 			if (result !== "ok") {
 				throw ApiError.badRequest(`delete image ${id}: ${result}`);

@@ -4,7 +4,7 @@ import { ImageService } from "./ImageService";
 
 export class CategoryService {
 	static async getList(name: string, range: string, sort: string) {
-		const [sortBy, sortOrder] = JSON.parse(sort) as ["name", "ASC" | "DESC"];
+		const [sortBy, sortOrder] = sort ? JSON.parse(sort) : [];
 		const [filterStart, filterEnd] = range ? JSON.parse(range) : [];
 
 		const q = name ? JSON.parse(name) : "";

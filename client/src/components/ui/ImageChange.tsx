@@ -38,7 +38,7 @@ export const ImageChange = (props: ImageInputProps) => {
 					<ImageField className="max-w-[100px]" source="src" title="preview" />
 				)}
 			</ImageInput>
-			<p className="text-[13px] -mt-[15px] text-[#979797] font-bold">
+			<p className="text-[13px] -mt-[5px] text-[#979797] font-bold">
 				Max size {getMegabyteSize(maxSize ?? DEFAULT_SIZE, true)}. Only jpeg,
 				jpg, png, webp
 			</p>

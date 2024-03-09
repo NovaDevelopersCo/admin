@@ -9,8 +9,6 @@ import {
 	maxValue
 } from "react-admin";
 
-import { ImageChange } from "../ui";
-
 export const CardEdit = () => {
 	return (
 		<Edit>
@@ -32,7 +30,6 @@ export const CardEdit = () => {
 					fullWidth
 					validate={[number(), minValue(0), maxValue(999)]}
 				/>
-				<ImageChange validate={required()} source="image" label="Image" />
 			</SimpleForm>
 		</Edit>
 	);

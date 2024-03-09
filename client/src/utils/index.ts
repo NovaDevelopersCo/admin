@@ -1,3 +1,4 @@
+export { isIntegerNumberValidation } from "./isIntegerNumberValidation";
 export { getValidationError } from "./getValidationError";
 export { formatObjId } from "./formatObjId";
 export { convertToBase64 } from "./convertToBase64";

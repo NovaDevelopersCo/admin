@@ -60,12 +60,6 @@ export class CardController {
 
 			const fields = req.body as Omit<TCard, "_id">;
 
-			const { name } = fields;
-
-			if (!name) {
-				throw ApiError.badRequest("Please, fill in all the fields");
-			}
-
 			const card = await CardService.create(fields);
 
 			return res.json({ data: card });

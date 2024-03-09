@@ -1,4 +1,4 @@
-import { Show, SimpleShowLayout, TextField, ImageField } from "react-admin";
+import { Show, SimpleShowLayout, TextField } from "react-admin";
 
 export const CardShow = () => {
 	return (
@@ -8,7 +8,6 @@ export const CardShow = () => {
 				<TextField source="description" />
 				<TextField source="price" />
 				<TextField source="count" />
-				<ImageField source="image" className="max-w-[100px]" />
 			</SimpleShowLayout>
 		</Show>
 	);

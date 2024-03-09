@@ -16,14 +16,16 @@ cardRoutes.post(
 	[
 		AuthMiddleware,
 		body("name")
+			.notEmpty()
+			.withMessage("Name is required")
 			.isLength({ max: 50 })
-			.withMessage(`Title can't be longer, than 50 symbols`),
+			.withMessage("Title can't be longer, than 50 symbols"),
 		body("price")
+			.notEmpty()
+			.withMessage("Price is required")
 			.isInt({ min: 0, max: 9999 })
-			.withMessage(`Price can't be smaller, than 0, and bigger than 9999`),
-		body("count")
-			.isInt({ min: 0, max: 9999 })
-			.withMessage(`Price can't be smaller, than 0, and bigger than 9999`)
+			.withMessage("Price can't be smaller, than 0, and bigger than 9999"),
+		body("category").notEmpty().withMessage("Category is required")
 	],
 	CardController.create
 );

@@ -2,9 +2,8 @@ import {
 	List,
 	TextField,
 	DatagridConfigurable,
-	ImageField,
+	ReferenceField,
 	EditButton,
-	ShowButton,
 	WrapperField
 } from "react-admin";
 
@@ -18,15 +17,17 @@ export const CardList = () => {
 			filters={Filters}
 			pagination={<Pagination />}
 		>
-			<DatagridConfigurable>
+			<DatagridConfigurable
+				rowClick={(id, resource) => `/${resource}/${id}/show`}
+			>
 				<TextField source="name" sortable />
-				<TextField source="description" />
 				<TextField source="price" sortable />
 				<TextField source="count" />
-				<ImageField source="image" className="max-w-[100px]" />
+				<ReferenceField source="category" reference="categories">
+					<TextField source="name" />
+				</ReferenceField>
 				<WrapperField label="Actions">
 					<EditButton />
-					<ShowButton />
 				</WrapperField>
 			</DatagridConfigurable>
 		</List>
