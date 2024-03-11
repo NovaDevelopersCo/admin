@@ -24,7 +24,8 @@ const provider: DataProvider = {
 		const query = {
 			filter: JSON.stringify({ id: par.ids })
 		};
-		const url = `/${res}?${qs.stringify(query)}`;
+
+		const url = `/${res}/many?${qs.stringify(query)}`;
 
 		const {
 			data: { data }

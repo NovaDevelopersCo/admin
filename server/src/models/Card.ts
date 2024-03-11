@@ -11,7 +11,7 @@ const card = new Schema<TCard>({
 	width: { type: String },
 	thickness: { type: String },
 	size: { type: String },
-	orderCount: { type: String },
+	orderCount: { type: String, default: "0" },
 	category: { type: String, ref: "Category", required: true }
 });
 

@@ -6,8 +6,8 @@ import { AuthMiddleware } from "../middlewares/AuthMiddleware";
 const categoriesRouter = Router();
 
 categoriesRouter.get("/", CategoryController.getList);
+categoriesRouter.get("/many", CategoryController.getMany);
 categoriesRouter.get("/:id", CategoryController.getOne);
 categoriesRouter.put("/:id", AuthMiddleware, CategoryController.update);
-categoriesRouter.get("/many", CategoryController.getMany);
 
 export { categoriesRouter };

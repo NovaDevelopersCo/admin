@@ -23,11 +23,11 @@ export class CategoryController {
 
 	static async getMany(req: Request, res: Response, next: NextFunction) {
 		try {
-			const { filter } = req.query as { filter: { ids: string[] } };
+			const { filter } = req.query as { filter: string };
 
-			const cards = await CategoryService.getMany(filter);
+			const categories = await CategoryService.getMany(filter);
 
-			return res.json({ data: cards });
+			return res.json({ data: categories });
 		} catch (e) {
 			next(e);
 		}

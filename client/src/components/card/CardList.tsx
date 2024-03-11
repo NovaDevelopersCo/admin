@@ -26,6 +26,7 @@ export const CardList = () => {
 				<ReferenceField source="category" reference="categories">
 					<TextField source="name" />
 				</ReferenceField>
+				<TextField source="orderCount" />
 				<WrapperField label="Actions">
 					<EditButton />
 				</WrapperField>

@@ -8,9 +8,9 @@ const cardRoutes = Router();
 
 import { AuthMiddleware } from "../middlewares/AuthMiddleware";
 
+cardRoutes.get("/many", CardController.getMany);
 cardRoutes.get("/:id", CardController.getOne);
 cardRoutes.get("/", CardController.getList);
-cardRoutes.get("/many", CardController.getMany);
 cardRoutes.post(
 	"/",
 	[

@@ -8,10 +8,11 @@ import {
 	minValue,
 	maxValue
 } from "react-admin";
+import { PageTitle } from "../ui";
 
 export const CardEdit = () => {
 	return (
-		<Edit>
+		<Edit title={<PageTitle />}>
 			<SimpleForm>
 				<TextInput
 					source="name"

@@ -16,14 +16,14 @@ export class CardService {
 		return card;
 	}
 
-	static async getList(unpArsedTitle: string, range: string, sort: string) {
+	static async getList(unParsedTitle: string, range: string, sort: string) {
 		const [sortBy, sortOrder] = sort ? JSON.parse(sort) : [];
 		// [
 		// 	"price" | "name" | "count" | "id",
 		// 	"ASC" | "DESC"
 		// ];
 
-		const q = unpArsedTitle ? JSON.parse(unpArsedTitle) : "";
+		const q: string = unParsedTitle ? JSON.parse(unParsedTitle) : "";
 
 		const [filterStart, filterEnd] = range ? JSON.parse(range) : [];
 
@@ -31,7 +31,9 @@ export class CardService {
 		let total;
 
 		if (q) {
-			items = items.filter((i) => i.name.includes(q));
+			items = items.filter((i) =>
+				i.name.toLowerCase().includes(q.toLowerCase())
+			);
 			total = items.length;
 		}
 
@@ -43,16 +45,6 @@ export class CardService {
 			items,
 			total: total ?? items.length
 		};
-	}
-
-	static async getMany(filter?: { ids: string[] }) {
-		if (!filter || !filter.ids) {
-			return [];
-		}
-
-		const cards = await CardModel.find({ _id: { $in: filter.ids } });
-
-		return cards;
 	}
 
 	static async create(
@@ -150,5 +142,21 @@ export class CardService {
 		await Promise.all(deleteCards);
 
 		return ids;
+	}
+
+	static async getMany(filter: string) {
+		if (!filter) {
+			return [];
+		}
+
+		const parsedFilterObj = JSON.parse(filter);
+
+		if (!parsedFilterObj.id) {
+			return [];
+		}
+
+		const cards = await CardModel.find({ _id: { $in: parsedFilterObj.id } });
+
+		return cards;
 	}
 }

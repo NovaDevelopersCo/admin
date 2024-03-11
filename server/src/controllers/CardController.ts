@@ -44,7 +44,7 @@ export class CardController {
 
 	static async getMany(req: Request, res: Response, next: NextFunction) {
 		try {
-			const { filter } = req.query as { filter: { ids: string[] } };
+			const { filter } = req.query as { filter: string };
 
 			const cards = await CardService.getMany(filter);
 
