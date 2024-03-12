@@ -23,7 +23,11 @@ export const CardList = () => {
 				<TextField source="name" sortable />
 				<TextField source="price" sortable />
 				<TextField source="count" />
-				<ReferenceField source="category" reference="categories">
+				<ReferenceField
+					source="category"
+					reference="categories"
+					sortable={false}
+				>
 					<TextField source="name" />
 				</ReferenceField>
 				<TextField source="orderCount" />

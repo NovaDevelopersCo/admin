@@ -18,10 +18,6 @@ export class CardService {
 
 	static async getList(unParsedTitle: string, range: string, sort: string) {
 		const [sortBy, sortOrder] = sort ? JSON.parse(sort) : [];
-		// [
-		// 	"price" | "name" | "count" | "id",
-		// 	"ASC" | "DESC"
-		// ];
 
 		const q: string = unParsedTitle ? JSON.parse(unParsedTitle) : "";
 
@@ -35,6 +31,26 @@ export class CardService {
 				i.name.toLowerCase().includes(q.toLowerCase())
 			);
 			total = items.length;
+		}
+
+		if (sortBy === "price" || sortBy === "orderCount" || sortBy === "count") {
+			if (sortOrder === "ASC") {
+				items = [...items].sort((a, b) => a.get(sortBy) - b.get(sortBy));
+			}
+
+			if (sortOrder === "DESC") {
+				items = [...items].sort((a, b) => b.get(sortBy) - a.get(sortBy));
+			}
+		}
+
+		if (sortBy === "name") {
+			if (sortOrder === "ASC") {
+				items = [...items].sort((a, b) => a.name.localeCompare(b.name));
+			}
+
+			if (sortOrder === "DESC") {
+				items = [...items].sort((a, b) => b.name.localeCompare(a.name));
+			}
 		}
 
 		if (filterStart && filterEnd) {
@@ -159,4 +175,6 @@ export class CardService {
 
 		return cards;
 	}
+
+	static async order() {}
 }

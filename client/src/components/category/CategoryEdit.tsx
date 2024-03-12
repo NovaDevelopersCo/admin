@@ -11,7 +11,7 @@ export const CategoryEdit = () => {
 			<SimpleForm toolbar={<EditToolbar />}>
 				<TextArea
 					source="description"
-					validate={[maxLength(200, "Max length 200 symbols")]}
+					validate={[maxLength(3000, "Max length 3000 symbols")]}
 				/>
 				<CategoryOptions isShow={false} />
 				<ImageChange source="image" label="Image" validate={[required()]} />

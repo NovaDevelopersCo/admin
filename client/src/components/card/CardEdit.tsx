@@ -6,8 +6,13 @@ import {
 	maxLength,
 	number,
 	minValue,
-	maxValue
+	maxValue,
+	regex,
+	type ValidateForm
 } from "react-admin";
+
+import type { FieldValues } from "react-hook-form";
+
 import { PageTitle } from "../ui";
 
 export const CardEdit = () => {
@@ -16,7 +21,14 @@ export const CardEdit = () => {
 			<SimpleForm>
 				<TextInput
 					source="name"
-					validate={[required(), maxLength(50)]}
+					validate={[
+						required(),
+						maxLength(50),
+						regex(
+							/^[a-zA-Z0-9*()\- ]+$/,
+							"Incorrect format. Specific symbols error"
+						)
+					]}
 					fullWidth
 				/>
 				<TextInput

@@ -7,6 +7,7 @@ import {
 	maxValue,
 	minValue,
 	number,
+	regex,
 	required
 } from "react-admin";
 
@@ -17,6 +18,8 @@ import { useState } from "react";
 import { CardCategorySelect } from "./CardCategorySelect";
 import { isIntegerNumberValidation } from "../../utils";
 
+import type { FieldValues } from "react-hook-form";
+
 export const CardCreate = () => {
 	const [options, setOptions] = useState<string[]>([]);
 
@@ -25,7 +28,14 @@ export const CardCreate = () => {
 			<SimpleForm>
 				<TextInput
 					source="name"
-					validate={[required(), maxLength(50)]}
+					validate={[
+						required(),
+						maxLength(50),
+						regex(
+							/^[a-zA-Z0-9*()\- ]+$/,
+							"Incorrect format. Specific symbols error"
+						)
+					]}
 					fullWidth
 				/>
 				<TextInput

@@ -3,6 +3,7 @@ import {
 	Show,
 	SimpleShowLayout,
 	TextField,
+	useRecordContext,
 	useReference
 } from "react-admin";
 
@@ -17,15 +18,27 @@ export const CardShow = () => {
 };
 
 const CardShowBody = () => {
+	const record = useRecordContext();
+
+	const { referenceRecord } = useReference({
+		id: record?.category,
+		reference: "categories"
+	});
+
 	return (
 		<SimpleShowLayout>
 			<TextField source="name" />
 			<TextField source="description" />
 			<TextField source="price" />
 			<TextField source="count" />
-			<ReferenceField source="category" reference="categories">
+			<ReferenceField source="category" reference="categories" link="show">
 				<TextField source="name" />
 			</ReferenceField>
+			{!!referenceRecord &&
+				!!referenceRecord.options &&
+				referenceRecord.options.map((i: string) => (
+					<TextField key={i} source={i} emptyText="н/д" />
+				))}
 		</SimpleShowLayout>
 	);
 };
