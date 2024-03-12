@@ -40,7 +40,7 @@ jobs:
               host: ${{env.SSH_HOST}}
               username: ${{env.SSH_USERNAME}}
               password: ${{env.SSH_PASSWORD}}
-              script: bash deploy-alco-admin.sh
+              script: bash deploy-metall-admin.sh
 
     client_build_deploy:
       runs-on: ubuntu-latest
@@ -64,5 +64,5 @@ jobs:
             username: ${{env.SSH_USERNAME}}
             password: ${{env.SSH_PASSWORD}}
             source: "client/dist/*"
-            target: "/var/www/html/alco/admin"
+            target: "/var/www/html/metall/admin"
             strip-components: 2

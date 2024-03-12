@@ -1,7 +1,8 @@
 import { CardModel } from "../models/Card";
 import { ApiError } from "../utils/ApiError";
 import type { TCard } from "../types";
-import { ImageService } from "./ImageService";
+import { CategoryModel } from "../models/Category";
+import { isIntegerNumberValidation } from "../utils/isIntegerNumberValidation";
 
 export class CardService {
 	static async getOne(id: string) {
@@ -14,64 +15,92 @@ export class CardService {
 		return card;
 	}
 
-	static async getList(
-		unpArsedTitle: string,
-		sort: ["price" | "description" | "title" | "count" | "id", string],
-		range: string
-	) {
-		const [field, sortOrder] = sort;
+	static async getList(unParsedTitle: string, range: string, sort: string) {
+		const [sortBy, sortOrder] = sort ? JSON.parse(sort) : [];
 
-		const title = unpArsedTitle ? JSON.parse(unpArsedTitle) : "";
+		const q: string = unParsedTitle ? JSON.parse(unParsedTitle) : "";
 
-		const sortField = field === "id" ? "_id" : field;
+		const [filterStart, filterEnd] = range ? JSON.parse(range) : [];
 
-		const [filterStart, filterEnd] = JSON.parse(range);
+		let items = await CardModel.find();
+		let total;
 
-		const allCards = await CardModel.find();
+		if (q) {
+			items = items.filter((i) =>
+				i.name.toLowerCase().includes(q.toLowerCase())
+			);
+			total = items.length;
+		}
 
-		const filteredByTitle = title
-			? allCards.filter((i) => i.title.includes(title))
-			: allCards;
+		if (sortBy === "price" || sortBy === "orderCount" || sortBy === "count") {
+			if (sortOrder === "ASC") {
+				items = [...items].sort((a, b) => a.get(sortBy) - b.get(sortBy));
+			}
 
-		// .sort((a, b) =>
-		// 		sortOrder === "ASC"
-		// 			? a[sortField].localeCompare(b[sortField])
-		// 			: b[sortField].localeCompare(a[sortField])
-		// 	)
+			if (sortOrder === "DESC") {
+				items = [...items].sort((a, b) => b.get(sortBy) - a.get(sortBy));
+			}
+		}
 
-		const splicedCards = filteredByTitle.slice(+filterStart, +filterEnd + 1);
+		if (sortBy === "name") {
+			if (sortOrder === "ASC") {
+				items = [...items].sort((a, b) => a.name.localeCompare(b.name));
+			}
+
+			if (sortOrder === "DESC") {
+				items = [...items].sort((a, b) => b.name.localeCompare(a.name));
+			}
+		}
+
+		if (filterStart && filterEnd) {
+			items = items.slice(+filterStart, +filterEnd + 1);
+		}
 
 		return {
-			cards: Array.isArray(splicedCards) ? splicedCards : [],
-			total: filteredByTitle.length
+			items,
+			total: total ?? items.length
 		};
 	}
 
-	static async getMany(filter?: { ids: string[] }) {
-		if (!filter) {
-			return [];
-		}
+	static async create(
+		card: Omit<TCard, "_id" | "orderCount"> & { [key: string]: string }
+	) {
+		const { price, name, count, category } = card;
 
-		const cards = await CardModel.find({ _id: { $in: filter.ids } });
-
-		const formattedCards = cards;
-
-		return Array.isArray(formattedCards) ? formattedCards : [];
-	}
-
-	static async getManyReference() {}
-
-	static async create(card: Omit<TCard, "_id">) {
-		const candidate = await CardModel.findOne({ title: card.title });
+		const candidate = await CardModel.findOne({ name });
 
 		if (candidate) {
 			throw ApiError.badRequest("Title is busy!");
 		}
 
-		const newCard = new CardModel({ ...card });
-		const image = await ImageService.upload(card.image, newCard._id);
+		const categoryCandidate = await CategoryModel.findById(category);
 
-		newCard.image = image;
+		if (!categoryCandidate) {
+			throw ApiError.badRequest("Category not found");
+		}
+
+		const newCard = new CardModel({ name, category });
+
+		const { options } = categoryCandidate;
+
+		// ...Object.keys(CardModel.schema.obj) - if need validate for fields (like size length, width, height)
+
+		const cardFieldsArr = ["price"];
+
+		if (count) {
+			cardFieldsArr.push("count");
+		}
+
+		const optionsObj: { [key: string]: string } = {};
+
+		options.map((o) => {
+			if (cardFieldsArr.includes(o)) {
+				isIntegerNumberValidation(card[o], o);
+				optionsObj[o] = card[o];
+			}
+		});
+
+		Object.assign(newCard, optionsObj);
 
 		await newCard.save();
 
@@ -85,12 +114,6 @@ export class CardService {
 			throw ApiError.badRequest("Card not found");
 		}
 
-		const { result } = await ImageService.remove(`alco/cards/${id}`);
-
-		if (result !== "ok") {
-			throw ApiError.badRequest(result);
-		}
-
 		const previousData = candidate;
 
 		const { deletedCount } = await CardModel.deleteOne({ _id: id });
@@ -102,21 +125,59 @@ export class CardService {
 		return previousData;
 	}
 
-	static async update(card: TCard, id: string) {
-		const { image, ...data } = card;
-
+	static async update(
+		card: TCard & { [key: string]: any; previousData: TCard },
+		id: string
+	) {
 		const candidate = await CardModel.findById(id);
+
+		const { previousData, ...data } = card;
 
 		if (!candidate) {
 			throw ApiError.badRequest("Card not found");
 		}
 
-		Object.assign(candidate, data);
+		const updatedCard: { [key: string]: string } = {
+			...candidate.toObject(),
+			...data
+		};
 
-		if (image) {
-			const imageUrl = await ImageService.upload(image, candidate._id);
-			candidate.image = imageUrl;
+		const needValidationArr = ["price"];
+
+		if (data.count) {
+			needValidationArr.push("count");
 		}
+
+		needValidationArr.map((o) => {
+			isIntegerNumberValidation(data[o], o);
+		});
+
+		// change category change logic
+		if (card.category !== card.previousData.category) {
+			const previousCategory = await CategoryModel.findById(
+				card.previousData.category
+			);
+
+			const actualCategory = await CategoryModel.findById(card.category);
+
+			if (!previousCategory || !actualCategory) {
+				throw ApiError.badRequest("Can't find category");
+			}
+
+			// clear old category properties into card
+			previousCategory.options.map((o) => {
+				updatedCard[o] = "";
+			});
+
+			// add new category properties to updated card
+			actualCategory.options.map((o) => {
+				if (Object.keys(card).includes(o)) {
+					updatedCard[o] = card[o];
+				}
+			});
+		}
+
+		Object.assign(candidate, updatedCard);
 
 		await candidate.save();
 
@@ -127,12 +188,6 @@ export class CardService {
 		const ids = JSON.parse(unParsedIds) as string[];
 
 		const deleteCards = ids.map(async (id) => {
-			const { result } = await ImageService.remove(`alco/cards/${id}`);
-
-			if (result !== "ok") {
-				throw ApiError.badRequest(`delete image ${id}: ${result}`);
-			}
-
 			const { deletedCount } = await CardModel.deleteOne({ _id: id });
 
 			if (deletedCount == 0) {
@@ -144,4 +199,22 @@ export class CardService {
 
 		return ids;
 	}
+
+	static async getMany(filter: string) {
+		if (!filter) {
+			return [];
+		}
+
+		const parsedFilterObj = JSON.parse(filter);
+
+		if (!parsedFilterObj.id) {
+			return [];
+		}
+
+		const cards = await CardModel.find({ _id: { $in: parsedFilterObj.id } });
+
+		return cards;
+	}
+
+	static async order() {}
 }

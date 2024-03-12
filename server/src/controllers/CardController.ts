@@ -17,7 +17,7 @@ export class CardController {
 
 			const card = await CardService.getOne(id);
 
-			return res.json({ card });
+			return res.json({ data: card });
 		} catch (e) {
 			next(e);
 		}
@@ -25,16 +25,16 @@ export class CardController {
 
 	static async getList(req: Request, res: Response, next: NextFunction) {
 		try {
-			const { title, range, sort } = req.query as {
-				title: string;
+			const { q, range, sort } = req.query as {
+				q: string;
 				range: string;
-				sort: ["price" | "description" | "title" | "count" | "id", string];
+				sort: string;
 			};
 
-			const { cards, total } = await CardService.getList(title, sort, range);
+			const { items, total } = await CardService.getList(q, range, sort);
 
 			return res.json({
-				cards,
+				data: items,
 				total
 			});
 		} catch (e) {
@@ -44,11 +44,11 @@ export class CardController {
 
 	static async getMany(req: Request, res: Response, next: NextFunction) {
 		try {
-			const { filter } = req.query as { filter: { ids: string[] } };
+			const { filter } = req.query as { filter: string };
 
 			const cards = await CardService.getMany(filter);
 
-			return res.json({ cards });
+			return res.json({ data: cards });
 		} catch (e) {
 			next(e);
 		}
@@ -60,15 +60,9 @@ export class CardController {
 
 			const fields = req.body as Omit<TCard, "_id">;
 
-			const { title, image, description } = fields;
-
-			if (!title || !image || !description) {
-				throw ApiError.badRequest("Please, fill in all the fields");
-			}
-
 			const card = await CardService.create(fields);
 
-			return res.json({ card });
+			return res.json({ data: card });
 		} catch (e) {
 			next(e);
 		}
@@ -84,7 +78,7 @@ export class CardController {
 
 			const card = await CardService.delete(id);
 
-			return res.json({ card });
+			return res.json({ data: card });
 		} catch (e) {
 			next(e);
 		}
@@ -94,8 +88,8 @@ export class CardController {
 		try {
 			getValidationErrors(req);
 
-			const fields = req.body as TCard & {
-				isImageUpdated: boolean;
+			const body = req.body as TCard & {
+				previousData: TCard;
 			};
 
 			const { id } = req.params as { id: string };
@@ -104,15 +98,13 @@ export class CardController {
 				throw ApiError.badRequest("Param id is empty");
 			}
 
-			const { title, description } = fields;
-
-			if (!title || !description) {
+			if (!body.name) {
 				throw ApiError.badRequest("Please, fill in all the fields");
 			}
 
-			const card = await CardService.update(fields, id);
+			const card = await CardService.update(body, id);
 
-			return res.json({ card });
+			return res.json({ data: card });
 		} catch (e) {
 			next(e);
 		}

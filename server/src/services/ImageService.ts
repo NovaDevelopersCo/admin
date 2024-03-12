@@ -2,11 +2,11 @@ import { UploadApiErrorResponse, v2 as cloudinary } from "cloudinary";
 import { ApiError } from "../utils/ApiError";
 
 export class ImageService {
-	static async upload(image: string, cardName: string) {
+	static async upload(image: string, cardName: string, folder: string) {
 		try {
 			const res = await cloudinary.uploader.upload(image, {
 				public_id: cardName,
-				folder: "alco/cards"
+				folder: `metall/${folder}`
 			});
 
 			return res.secure_url;

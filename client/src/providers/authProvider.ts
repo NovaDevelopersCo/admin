@@ -1,7 +1,7 @@
 import type { AuthProvider } from "react-admin";
 
 import { AuthService } from "../api/AuthService";
-import { useAuthStore } from "../store/auth";
+import { useAuthStore } from "../store";
 
 export const authProvider: AuthProvider = {
 	login: async (user) => {

@@ -2,6 +2,9 @@
 module.exports = {
 	content: ["./src/**/*.{ts,tsx}"],
 	theme: {
+		textColor: {
+			inputTitle: "rgba(0, 0, 0, 0.6)"
+		},
 		extend: {
 			keyframes: {
 				authLoader: {
@@ -16,6 +19,10 @@ module.exports = {
 			animation: {
 				"auth-loader": "authLoader 1s linear infinite"
 			}
+		},
+		backgroundColor: {
+			optionItem: "rgba(0, 0, 0, 0.08)",
+			inputBg: "#f5f5f5"
 		}
 	},
 
