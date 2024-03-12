@@ -67,7 +67,11 @@ export class CategoryService {
 		}
 
 		if (image) {
-			const imageUrl = await ImageService.upload(image, category._id);
+			const imageUrl = await ImageService.upload(
+				image,
+				category._id,
+				"categories"
+			);
 			category.image = imageUrl;
 		}
 

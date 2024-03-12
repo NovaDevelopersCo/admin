@@ -11,20 +11,17 @@ import {
 	required
 } from "react-admin";
 
-import { capitalizeString } from "../../utils";
+import { capitalizeString, isIntegerNumberValidation } from "../../utils";
 
 import { useState } from "react";
 
 import { CardCategorySelect } from "./CardCategorySelect";
-import { isIntegerNumberValidation } from "../../utils";
-
-import type { FieldValues } from "react-hook-form";
 
 export const CardCreate = () => {
 	const [options, setOptions] = useState<string[]>([]);
 
 	return (
-		<Create>
+		<Create redirect="list">
 			<SimpleForm>
 				<TextInput
 					source="name"
@@ -70,7 +67,7 @@ export const CardCreate = () => {
 						label={capitalizeString(i)}
 						key={i}
 						fullWidth
-						validate={[maxLength(5), isIntegerNumberValidation]}
+						validate={[maxLength(5)]}
 					/>
 				))}
 			</SimpleForm>

@@ -89,7 +89,7 @@ export class CardController {
 			getValidationErrors(req);
 
 			const body = req.body as TCard & {
-				isImageUpdated: boolean;
+				previousData: TCard;
 			};
 
 			const { id } = req.params as { id: string };

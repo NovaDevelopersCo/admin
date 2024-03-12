@@ -1,7 +1,6 @@
 import { CardModel } from "../models/Card";
 import { ApiError } from "../utils/ApiError";
 import type { TCard } from "../types";
-import { ImageService } from "./ImageService";
 import { CategoryModel } from "../models/Category";
 import { isIntegerNumberValidation } from "../utils/isIntegerNumberValidation";
 
@@ -80,11 +79,17 @@ export class CardService {
 			throw ApiError.badRequest("Category not found");
 		}
 
-		const newCard = new CardModel({ price, name, count, category });
+		const newCard = new CardModel({ name, category });
 
 		const { options } = categoryCandidate;
 
-		const cardFieldsArr = Object.keys(CardModel.schema.obj);
+		// ...Object.keys(CardModel.schema.obj) - if need validate for fields (like size length, width, height)
+
+		const cardFieldsArr = ["price"];
+
+		if (count) {
+			cardFieldsArr.push("count");
+		}
 
 		const optionsObj: { [key: string]: string } = {};
 
@@ -109,12 +114,6 @@ export class CardService {
 			throw ApiError.badRequest("Card not found");
 		}
 
-		const { result } = await ImageService.remove(`metall/cards/${id}`);
-
-		if (result !== "ok") {
-			throw ApiError.badRequest(result);
-		}
-
 		const previousData = candidate;
 
 		const { deletedCount } = await CardModel.deleteOne({ _id: id });
@@ -126,12 +125,59 @@ export class CardService {
 		return previousData;
 	}
 
-	static async update(card: TCard, id: string) {
+	static async update(
+		card: TCard & { [key: string]: any; previousData: TCard },
+		id: string
+	) {
 		const candidate = await CardModel.findById(id);
+
+		const { previousData, ...data } = card;
 
 		if (!candidate) {
 			throw ApiError.badRequest("Card not found");
 		}
+
+		const updatedCard: { [key: string]: string } = {
+			...candidate.toObject(),
+			...data
+		};
+
+		const needValidationArr = ["price"];
+
+		if (data.count) {
+			needValidationArr.push("count");
+		}
+
+		needValidationArr.map((o) => {
+			isIntegerNumberValidation(data[o], o);
+		});
+
+		// change category change logic
+		if (card.category !== card.previousData.category) {
+			const previousCategory = await CategoryModel.findById(
+				card.previousData.category
+			);
+
+			const actualCategory = await CategoryModel.findById(card.category);
+
+			if (!previousCategory || !actualCategory) {
+				throw ApiError.badRequest("Can't find category");
+			}
+
+			// clear old category properties into card
+			previousCategory.options.map((o) => {
+				updatedCard[o] = "";
+			});
+
+			// add new category properties to updated card
+			actualCategory.options.map((o) => {
+				if (Object.keys(card).includes(o)) {
+					updatedCard[o] = card[o];
+				}
+			});
+		}
+
+		Object.assign(candidate, updatedCard);
 
 		await candidate.save();
 
@@ -142,12 +188,6 @@ export class CardService {
 		const ids = JSON.parse(unParsedIds) as string[];
 
 		const deleteCards = ids.map(async (id) => {
-			const { result } = await ImageService.remove(`metall/cards/${id}`);
-
-			if (result !== "ok") {
-				throw ApiError.badRequest(`delete image ${id}: ${result}`);
-			}
-
 			const { deletedCount } = await CardModel.deleteOne({ _id: id });
 
 			if (deletedCount == 0) {

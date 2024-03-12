@@ -68,7 +68,10 @@ const provider: DataProvider = {
 	update: async (res, par) => {
 		const {
 			data: { data }
-		} = await $api.put(`/${res}/${par.id}`, { ...par.data });
+		} = await $api.put(`/${res}/${par.id}`, {
+			...par.data,
+			previousData: par.previousData
+		});
 		return { data: formatObjId(data) };
 	},
 	delete: async (res, par) => {

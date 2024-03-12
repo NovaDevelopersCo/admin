@@ -19,7 +19,11 @@ const MyAppBar = () => (
 );
 
 const MyLayout = (props: any) => {
-	return <Layout {...props} appBar={MyAppBar} />;
+	return (
+		<>
+			<Layout {...props} appBar={MyAppBar} />
+		</>
+	);
 };
 
 export const App = () => {
