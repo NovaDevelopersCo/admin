@@ -65,4 +65,3 @@ jobs:
             password: ${{env.SSH_PASSWORD}}
             source: "client/dist/*"
             target: "/var/www/html/metall/admin"
-            strip-components: 2
