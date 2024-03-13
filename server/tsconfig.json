@@ -106,7 +106,5 @@
   "include": [
     "./src/**/*"
   ],
-  "ts-node": {
-    "esm": true
-  }
+  "ts-node": {}
 }

@@ -6,6 +6,8 @@ import { TokenService } from "../services/TokenService";
 export class AuthController {
 	static async login(req: Request, res: Response, next: NextFunction) {
 		try {
+			console.log("sss");
+
 			const { login, password } = req.body as {
 				login: string;
 				password: string;

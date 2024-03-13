@@ -20,7 +20,7 @@ cardRoutes.post(
 			.withMessage("Name is required")
 			.isLength({ max: 50 })
 			.withMessage("Name can't be longer, than 50 symbols")
-			.matches(/^[a-zA-Z0-9*()\- ]+$/)
+			.matches(/^[a-zA-Z0-9*()\- а-яА-Я]+$/u)
 			.withMessage("Incorrect format"),
 		body("price")
 			.notEmpty()
@@ -42,7 +42,7 @@ cardRoutes.put(
 			.withMessage("Name is required")
 			.isLength({ max: 50 })
 			.withMessage("Name can't be longer, than 50 symbols")
-			.matches(/^[a-zA-Z0-9*()\- ]+$/)
+			.matches(/^[a-zA-Z0-9*()\- а-яА-Я]+$/u)
 			.withMessage("Incorrect format"),
 		body("price")
 			.notEmpty()
