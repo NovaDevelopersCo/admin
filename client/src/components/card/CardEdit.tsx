@@ -53,7 +53,7 @@ const CardEditBody = () => {
 					required(),
 					maxLength(50),
 					regex(
-						/^[a-zA-Z0-9*()\- ]+$/,
+						/^[a-zA-Z0-9*()\- а-яА-Я]+$/u,
 						"Incorrect format. Specific symbols error"
 					)
 				]}
