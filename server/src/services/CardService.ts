@@ -85,25 +85,34 @@ export class CardService {
 
 		const newCard = new CardModel({ name, category });
 
-		const { options } = categoryCandidate;
-
-		const cardFieldsArr = ["price", ...Object.keys(CardModel.schema.obj)];
-
 		if (price) {
+			if (price.includes(" ")) {
+				throw ApiError.badRequest("Can't use spaces in price");
+			}
 			Validation.isIntegerNumberValidation(price, "price");
 			newCard.price = price;
 		}
 
 		if (count) {
+			if (count.includes(" ")) {
+				throw ApiError.badRequest("Can't use spaces in count");
+			}
 			Validation.isIntegerNumberValidation(count, "count");
 			newCard.count = count;
 		}
 
+		const { options } = categoryCandidate;
+
+		const cardFieldsArr = ["price", ...Object.keys(CardModel.schema.obj)];
+
 		const optionsObj: { [key: string]: string } = {};
 
 		options.map((o) => {
-			if (cardFieldsArr.includes(o)) {
-				// Validation.isIntegerNumberValidation(card[o], o); if need validation
+			if (cardFieldsArr.includes(o) && Object.keys(card).includes(o)) {
+				Validation.isIntegerNumberValidation(card[o].trim(), o, false);
+				if (card[o].length > 8) {
+					throw ApiError.badRequest(`${o} can't be bigger, than 8 symbols`);
+				}
 				optionsObj[o] = card[o];
 			}
 		});
@@ -151,11 +160,17 @@ export class CardService {
 		};
 
 		if (price) {
+			if (price.includes(" ")) {
+				throw ApiError.badRequest("Can't use spaces in price");
+			}
 			Validation.isIntegerNumberValidation(price, "price");
 			updatedCard.price = price;
 		}
 
 		if (count) {
+			if (count.includes(" ")) {
+				throw ApiError.badRequest("Can't use spaces here in count");
+			}
 			updatedCard.count = count;
 			Validation.isIntegerNumberValidation(count, "count");
 		}
@@ -180,6 +195,9 @@ export class CardService {
 			// add new category properties to updated card
 			actualCategory.options.map((o) => {
 				if (Object.keys(card).includes(o)) {
+					if (card[o].length > 8) {
+						throw ApiError.badRequest(`${o} can't be bigger, than 8 symbols`);
+					}
 					updatedCard[o] = card[o];
 				}
 			});

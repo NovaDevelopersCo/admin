@@ -67,7 +67,8 @@ const CardEditBody = () => {
 					minValue(0),
 					maxValue(9999),
 					required(),
-					Validation.isIntegerNumberValidation
+					regex(/^\S*$/, "Can't use spaces here"),
+					regex(/^\d+$/, "Only integer number. No like 4.0 or 5.1")
 				]}
 				label="Price"
 				fullWidth
@@ -80,7 +81,8 @@ const CardEditBody = () => {
 					number(),
 					minValue(0),
 					maxValue(999),
-					Validation.isIntegerNumberValidation
+					regex(/^\S*$/, "Can't use spaces here"),
+					regex(/^\d+$/, "Only integer number. No like 4.0 or 5.1")
 				]}
 			/>
 			<ReferenceInput source="category" reference="categories">
@@ -95,7 +97,11 @@ const CardEditBody = () => {
 						label={Format.capitalizeString(i)}
 						key={i}
 						fullWidth
-						validate={[maxLength(5), number()]}
+						validate={[
+							maxLength(8),
+							number(),
+							regex(/^\S*$/, "Can't use spaces here")
+						]}
 					/>
 				))
 			)}

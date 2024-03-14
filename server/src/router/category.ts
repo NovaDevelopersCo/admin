@@ -15,12 +15,13 @@ categoriesRouter.put(
 	[
 		AuthMiddleware,
 		body("name")
+			.trim()
 			.notEmpty()
 			.withMessage("Name is required")
 			.isLength({ max: 50 })
 			.withMessage("Name can't be bigger, than 50 symbols")
 			.matches(/^[a-zA-Z0-9*()\- а-яА-Я]+$/u)
-			.withMessage("Incorrect format"),
+			.withMessage("Name incorrect format"),
 		body("description")
 			.isLength({ max: 3000 })
 			.withMessage("Description can't be bigger, than 3000 symbols")

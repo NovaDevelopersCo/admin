@@ -8,17 +8,6 @@ export class Validation {
 		return str ? JSON.parse(str?.split("@@react-admin@@")[1]) : {};
 	}
 
-	static isIntegerNumberValidation(num: number): ValidationErrorMessage | null {
-		if (String(num).includes(",")) {
-			return { message: "Not integer number", args: { isInteger: num } };
-		}
-
-		if (Number.isInteger(+num) || !num) {
-			return null;
-		}
-		return { message: "Not integer number", args: { isInteger: num } };
-	}
-
 	static isStrNotOnlySpace(str: string) {
 		if (str.trim().length > 0) {
 			return null;
