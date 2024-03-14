@@ -29,11 +29,15 @@ export class CategoryService {
 			}
 		}
 
-		if (filterStart && filterEnd) {
+		if (!total) {
+			total = items.length;
+		}
+
+		if (Number.isInteger(+filterStart) && Number.isInteger(+filterEnd)) {
 			items = items.slice(+filterStart, +filterEnd + 1);
 		}
 
-		return { items, total: total ?? items.length };
+		return { items, total };
 	}
 
 	static async getOne(id: string) {

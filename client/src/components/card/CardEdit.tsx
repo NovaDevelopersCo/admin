@@ -17,7 +17,7 @@ import { CardCategorySelect } from "./CardCategorySelect";
 
 import { Loader, PageTitle } from "../ui";
 import { useEffect, useState } from "react";
-import { isIntegerNumberValidation, capitalizeString } from "../../utils";
+import { Validation, Format } from "../../utils";
 
 export const CardEdit = () => {
 	return (
@@ -31,7 +31,7 @@ const CardEditBody = () => {
 	const [options, setOptions] = useState<string[]>([]);
 
 	const record = useRecordContext();
-	const { referenceRecord, isLoading, isFetching } = useReference({
+	const { referenceRecord, isLoading } = useReference({
 		id: record.category,
 		reference: "categories"
 	});
@@ -55,7 +55,8 @@ const CardEditBody = () => {
 					regex(
 						/^[a-zA-Z0-9*()\- а-яА-Я]+$/u,
 						"Incorrect format. Specific symbols error"
-					)
+					),
+					Validation.isStrNotOnlySpace
 				]}
 				fullWidth
 			/>
@@ -66,7 +67,7 @@ const CardEditBody = () => {
 					minValue(0),
 					maxValue(9999),
 					required(),
-					isIntegerNumberValidation
+					Validation.isIntegerNumberValidation
 				]}
 				label="Price"
 				fullWidth
@@ -79,7 +80,7 @@ const CardEditBody = () => {
 					number(),
 					minValue(0),
 					maxValue(999),
-					isIntegerNumberValidation
+					Validation.isIntegerNumberValidation
 				]}
 			/>
 			<ReferenceInput source="category" reference="categories">
@@ -91,10 +92,10 @@ const CardEditBody = () => {
 				options.map((i) => (
 					<TextInput
 						source={i}
-						label={capitalizeString(i)}
+						label={Format.capitalizeString(i)}
 						key={i}
 						fullWidth
-						validate={[maxLength(5)]}
+						validate={[maxLength(5), number()]}
 					/>
 				))
 			)}

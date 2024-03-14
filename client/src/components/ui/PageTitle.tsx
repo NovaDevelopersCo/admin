@@ -1,9 +1,9 @@
 import { useRecordContext } from "react-admin";
 
-import { formatTitle } from "../../utils";
+import { Format } from "../../utils";
 
 export const PageTitle = () => {
 	const record = useRecordContext();
 
-	return <>{record ? formatTitle(record.name) : ""}</>;
+	return <>{record ? Format.formatTitle(record.name) : ""}</>;
 };

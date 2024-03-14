@@ -11,7 +11,7 @@ import {
 	required
 } from "react-admin";
 
-import { capitalizeString, isIntegerNumberValidation } from "../../utils";
+import { Format, Validation } from "../../utils";
 
 import { useState } from "react";
 
@@ -31,7 +31,8 @@ export const CardCreate = () => {
 						regex(
 							/^[a-zA-Z0-9*()\- а-яА-Я]+$/u,
 							"Incorrect format. Specific symbols error"
-						)
+						),
+						Validation.isStrNotOnlySpace
 					]}
 					fullWidth
 				/>
@@ -42,7 +43,7 @@ export const CardCreate = () => {
 						minValue(0),
 						maxValue(9999),
 						required(),
-						isIntegerNumberValidation
+						Validation.isIntegerNumberValidation
 					]}
 					label="Price"
 					fullWidth
@@ -55,7 +56,7 @@ export const CardCreate = () => {
 						number(),
 						minValue(0),
 						maxValue(999),
-						isIntegerNumberValidation
+						Validation.isIntegerNumberValidation
 					]}
 				/>
 				<ReferenceInput source="category" reference="categories">
@@ -64,10 +65,10 @@ export const CardCreate = () => {
 				{options.map((i) => (
 					<TextInput
 						source={i}
-						label={capitalizeString(i)}
+						label={Format.capitalizeString(i)}
 						key={i}
 						fullWidth
-						validate={[maxLength(5)]}
+						validate={[maxLength(5), number()]}
 					/>
 				))}
 			</SimpleForm>

@@ -2,7 +2,7 @@ import { CardModel } from "../models/Card";
 import { ApiError } from "../utils/ApiError";
 import type { TCard } from "../types";
 import { CategoryModel } from "../models/Category";
-import { isIntegerNumberValidation } from "../utils/isIntegerNumberValidation";
+import { Validation } from "../utils/Validation";
 
 export class CardService {
 	static async getOne(id: string) {
@@ -52,20 +52,24 @@ export class CardService {
 			}
 		}
 
-		if (filterStart && filterEnd) {
+		if (!total) {
+			total = items.length;
+		}
+
+		if (Number.isInteger(+filterStart) && Number.isInteger(+filterEnd)) {
 			items = items.slice(+filterStart, +filterEnd + 1);
 		}
 
 		return {
 			items,
-			total: total ?? items.length
+			total
 		};
 	}
 
 	static async create(
 		card: Omit<TCard, "_id" | "orderCount"> & { [key: string]: string }
 	) {
-		const { price, name, count, category } = card;
+		const { name, count, category, price } = card;
 
 		const candidate = await CardModel.findOne({ name });
 
@@ -83,19 +87,23 @@ export class CardService {
 
 		const { options } = categoryCandidate;
 
-		// ...Object.keys(CardModel.schema.obj) - if need validate for fields (like size length, width, height)
+		const cardFieldsArr = ["price", ...Object.keys(CardModel.schema.obj)];
 
-		const cardFieldsArr = ["price"];
+		if (price) {
+			Validation.isIntegerNumberValidation(price, "price");
+			newCard.price = price;
+		}
 
 		if (count) {
-			cardFieldsArr.push("count");
+			Validation.isIntegerNumberValidation(count, "count");
+			newCard.count = count;
 		}
 
 		const optionsObj: { [key: string]: string } = {};
 
 		options.map((o) => {
 			if (cardFieldsArr.includes(o)) {
-				isIntegerNumberValidation(card[o], o);
+				// Validation.isIntegerNumberValidation(card[o], o); if need validation
 				optionsObj[o] = card[o];
 			}
 		});
@@ -131,7 +139,7 @@ export class CardService {
 	) {
 		const candidate = await CardModel.findById(id);
 
-		const { previousData, ...data } = card;
+		const { previousData, price, count, ...data } = card;
 
 		if (!candidate) {
 			throw ApiError.badRequest("Card not found");
@@ -142,15 +150,15 @@ export class CardService {
 			...data
 		};
 
-		const needValidationArr = ["price"];
-
-		if (data.count) {
-			needValidationArr.push("count");
+		if (price) {
+			Validation.isIntegerNumberValidation(price, "price");
+			updatedCard.price = price;
 		}
 
-		needValidationArr.map((o) => {
-			isIntegerNumberValidation(data[o], o);
-		});
+		if (count) {
+			updatedCard.count = count;
+			Validation.isIntegerNumberValidation(count, "count");
+		}
 
 		// change category change logic
 		if (card.category !== card.previousData.category) {

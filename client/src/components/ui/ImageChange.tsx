@@ -1,5 +1,5 @@
 import { ImageInput, ImageField, type ImageInputProps } from "react-admin";
-import { getMegabyteSize } from "../../utils";
+import { Format } from "../../utils";
 import { useFormContext } from "react-hook-form";
 
 import { useState } from "react";
@@ -22,7 +22,7 @@ export const ImageChange = (props: ImageInputProps) => {
 				onChange={(e) => {
 					if (!e) {
 						alert(
-							`Only jpg, jpeg, png, webp. Max size ${getMegabyteSize(
+							`Only jpg, jpeg, png, webp. Max size ${Format.getMegabyteSize(
 								maxSize ?? DEFAULT_SIZE,
 								true
 							)}`
@@ -39,8 +39,8 @@ export const ImageChange = (props: ImageInputProps) => {
 				)}
 			</ImageInput>
 			<p className="text-[13px] -mt-[5px] text-[#979797] font-bold">
-				Max size {getMegabyteSize(maxSize ?? DEFAULT_SIZE, true)}. Only jpeg,
-				jpg, png, webp
+				Max size {Format.getMegabyteSize(maxSize ?? DEFAULT_SIZE, true)}. Only
+				jpeg, jpg, png, webp
 			</p>
 			{!image && <ImageField className="max-w-[100px]" source="image" />}
 		</>

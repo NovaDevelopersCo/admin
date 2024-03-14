@@ -16,6 +16,9 @@ cardRoutes.post(
 	[
 		AuthMiddleware,
 		body("name")
+			.trim()
+			.notEmpty()
+			.withMessage("Name can't be only spaces")
 			.notEmpty()
 			.withMessage("Name is required")
 			.isLength({ max: 50 })
@@ -38,6 +41,9 @@ cardRoutes.put(
 	[
 		AuthMiddleware,
 		body("name")
+			.trim()
+			.notEmpty()
+			.withMessage("Name can't be only spaces")
 			.notEmpty()
 			.withMessage("Name is required")
 			.isLength({ max: 50 })

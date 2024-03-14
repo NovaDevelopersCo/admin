@@ -1,4 +1,4 @@
-import { classNames, getValidationError } from "../../utils";
+import { classNames, Validation } from "../../utils";
 import { Typography } from "./Typography";
 
 import { useInput, type InputProps } from "react-admin";
@@ -30,7 +30,7 @@ export const TextArea = (
 			/>
 			{!!error && (
 				<p className="text-[#d32f2f] ml-[5px] text-[12px]">
-					{getValidationError(error.message)?.message}
+					{Validation.getReactAdminValidationError(error.message)?.message}
 				</p>
 			)}
 		</div>
