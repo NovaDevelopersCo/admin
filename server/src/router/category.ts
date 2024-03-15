@@ -14,15 +14,22 @@ categoriesRouter.put(
 	"/:id",
 	[
 		AuthMiddleware,
-		body("name")
+		// body("name")
+		// 	.trim()
+		// 	.notEmpty()
+		// 	.withMessage("Name is required")
+		// 	.isLength({ max: 50 })
+		// 	.withMessage("Name can't be bigger, than 50 symbols")
+		// 	.matches(/^[a-zA-Z0-9*()\- а-яА-Я]+$/u)
+		// 	.withMessage("Name incorrect format"),
+		body("description")
+			.notEmpty()
+			.withMessage("Description is required")
+			.bail()
 			.trim()
 			.notEmpty()
-			.withMessage("Name is required")
-			.isLength({ max: 50 })
-			.withMessage("Name can't be bigger, than 50 symbols")
-			.matches(/^[a-zA-Z0-9*()\- а-яА-Я]+$/u)
-			.withMessage("Name incorrect format"),
-		body("description")
+			.withMessage("Description can't be only spaces")
+			.bail()
 			.isLength({ max: 3000 })
 			.withMessage("Description can't be bigger, than 3000 symbols")
 	],

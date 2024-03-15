@@ -4,8 +4,7 @@ import {
 	TextField,
 	ImageField,
 	WrapperField,
-	EditButton,
-	ShowButton
+	EditButton
 } from "react-admin";
 
 import { Actions, Filters, Pagination, Description } from "../ui";

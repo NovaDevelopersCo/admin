@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { CategoryService } from "../services/CategoryService";
 
 import { ApiError } from "../utils/ApiError";
+import { getValidationErrors } from "../utils/getValidationErrors";
 
 export class CategoryController {
 	static async getList(req: Request, res: Response, next: NextFunction) {
@@ -47,6 +48,8 @@ export class CategoryController {
 
 	static async update(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
+
 			const { id } = req.params as { id: string };
 
 			const { description, image } = req.body as {

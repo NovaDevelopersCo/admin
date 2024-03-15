@@ -21,7 +21,7 @@ cardRoutes.post(
 			.bail()
 			.trim()
 			.notEmpty()
-			.withMessage("Name can't be only spaces. Name is required")
+			.withMessage("Name can't be only spaces")
 			.bail()
 			.isLength({ max: 50 })
 			.withMessage("Name can't be longer, than 50 symbols")

@@ -1,5 +1,3 @@
-import type { ValidationErrorMessage } from "react-admin";
-
 export class Validation {
 	constructor() {}
 

@@ -55,7 +55,7 @@ export class CategoryService {
 			description,
 			image
 		}: {
-			description?: string;
+			description: string;
 			image?: string;
 		},
 		id: string
@@ -66,9 +66,7 @@ export class CategoryService {
 			throw ApiError.badRequest("Category not found");
 		}
 
-		if (description) {
-			category.description = description;
-		}
+		category.description = description;
 
 		if (image) {
 			const imageUrl = await ImageService.upload(

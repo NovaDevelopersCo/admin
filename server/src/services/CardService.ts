@@ -1,6 +1,6 @@
 import { CardModel } from "../models/Card";
 import { ApiError } from "../utils/ApiError";
-import type { TCard } from "../types";
+import type { TCard, TCategory } from "../types";
 import { CategoryModel } from "../models/Category";
 import { Validation } from "../utils/Validation";
 
@@ -107,8 +107,10 @@ export class CardService {
 
 		const optionsObj: { [key: string]: string } = {};
 
+		const cardKeys = Object.keys(card);
+
 		options.map((o) => {
-			if (cardFieldsArr.includes(o) && Object.keys(card).includes(o)) {
+			if (cardFieldsArr.includes(o) && cardKeys.includes(o)) {
 				Validation.isIntegerNumberValidation(card[o].trim(), o, false);
 				if (card[o].length > 8) {
 					throw ApiError.badRequest(`${o} can't be bigger, than 8 symbols`);
@@ -175,32 +177,43 @@ export class CardService {
 			Validation.isIntegerNumberValidation(count, "count");
 		}
 
-		// change category change logic
-		if (card.category !== card.previousData.category) {
-			const previousCategory = await CategoryModel.findById(
-				card.previousData.category
-			);
+		const category = await CategoryModel.findById(card.previousData.category);
 
-			const actualCategory = await CategoryModel.findById(card.category);
+		if (!category) {
+			throw ApiError.badRequest("Can't find category");
+		}
 
-			if (!previousCategory || !actualCategory) {
-				throw ApiError.badRequest("Can't find category");
-			}
+		const validateFieldsAndAssignToCard = (category: TCategory) => {
+			const cardKeys = Object.keys(card);
 
-			// clear old category properties into card
-			previousCategory.options.map((o) => {
-				updatedCard[o] = "";
-			});
-
-			// add new category properties to updated card
-			actualCategory.options.map((o) => {
-				if (Object.keys(card).includes(o)) {
+			category.options.map((o) => {
+				if (cardKeys.includes(o)) {
+					Validation.isIntegerNumberValidation(card[o].trim(), o, false);
 					if (card[o].length > 8) {
 						throw ApiError.badRequest(`${o} can't be bigger, than 8 symbols`);
 					}
 					updatedCard[o] = card[o];
 				}
 			});
+		};
+
+		// change category change logic
+		if (card.category !== card.previousData.category) {
+			const actualCategory = await CategoryModel.findById(card.category);
+
+			if (!actualCategory) {
+				throw ApiError.badRequest("Can't find category");
+			}
+
+			// clear old category properties into card
+			category.options.map((o) => {
+				updatedCard[o] = "";
+			});
+
+			// add new category properties to updated card
+			validateFieldsAndAssignToCard(actualCategory);
+		} else {
+			validateFieldsAndAssignToCard(category);
 		}
 
 		Object.assign(candidate, updatedCard);
