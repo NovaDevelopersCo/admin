@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 
 import { CategoryService } from "../services/CategoryService";
 
-import { ApiError } from "../utils/ApiError";
 import { getValidationErrors } from "../utils/getValidationErrors";
 
 export class CategoryController {
@@ -56,10 +55,6 @@ export class CategoryController {
 				image: string;
 				description: string;
 			};
-
-			if (!id) {
-				throw ApiError.badRequest("Param id is empty");
-			}
 
 			const category = await CategoryService.update({ description, image }, id);
 

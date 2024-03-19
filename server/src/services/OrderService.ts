@@ -1,5 +1,7 @@
+import { CardModel } from "../models/Card";
 import { OrderModel } from "../models/Order";
 import { ApiError } from "../utils/ApiError";
+import { OrderItemModel } from "../models/OrderItem";
 
 type TCreateBodyOrder = {
 	card: string;
@@ -56,9 +58,9 @@ export class OrderService {
 		name: string;
 		body: string;
 	}) {
-		const { body, description } = order;
+		const orders = await OrderModel.find();
 
-		console.log(body);
+		const { body, description, ...dataOrder } = order;
 
 		const parsedBody: TCreateBodyOrder[] = body ? JSON.parse(body) : [];
 
@@ -89,5 +91,37 @@ export class OrderService {
 					: i.count
 			);
 		});
+
+		const orderItemsArr = [];
+
+		for (let [key, value] of formattedOrder) {
+			const card = await CardModel.findById(key);
+
+			if (!card) {
+				throw ApiError.badRequest("Card not found");
+			}
+
+			if (+value > +card.count) {
+				throw ApiError.badRequest(`There are only 64 ${card.name} available`);
+			}
+
+			price += +value * +card.price;
+
+			const newOrderItem = new OrderItemModel({ count: value, card: key });
+
+			orderItemsArr.push(newOrderItem._id);
+
+			await newOrderItem.save();
+		}
+
+		newOrder.number = String(orders.length);
+
+		Object.assign(newOrder, dataOrder);
+
+		newOrder.body = orderItemsArr;
+
+		await newOrder.save();
+
+		return { message: `Your order number: ${newOrder.number}` };
 	}
 }

@@ -2,15 +2,21 @@ import { Router } from "express";
 
 import { CardController } from "../controllers/CardController";
 
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 
 const cardRoutes = Router();
 
 import { AuthMiddleware } from "../middlewares/AuthMiddleware";
 
 cardRoutes.get("/many", CardController.getMany);
-cardRoutes.get("/:id", CardController.getOne);
+cardRoutes.get(
+	"/:id",
+	[param("id").notEmpty().withMessage("Param id is empty")],
+	CardController.getOne
+);
+
 cardRoutes.get("/", CardController.getList);
+
 cardRoutes.post(
 	"/",
 	[
@@ -50,12 +56,24 @@ cardRoutes.post(
 	],
 	CardController.create
 );
-cardRoutes.delete("/:id", AuthMiddleware, CardController.delete);
-cardRoutes.delete("/many/:ids", AuthMiddleware, CardController.deleteMany);
+
+cardRoutes.delete(
+	"/:id",
+	[AuthMiddleware, param("id").notEmpty().withMessage("Param id is empty")],
+	CardController.delete
+);
+
+cardRoutes.delete(
+	"/many/:ids",
+	[AuthMiddleware, param("ids").notEmpty().withMessage("Params ids is empty")],
+	CardController.deleteMany
+);
+
 cardRoutes.put(
 	"/:id",
 	[
 		AuthMiddleware,
+		param("id").notEmpty().withMessage("Param id is empty"),
 		body("name")
 			.notEmpty()
 			.withMessage("Name is required")

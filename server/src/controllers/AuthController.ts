@@ -6,16 +6,10 @@ import { TokenService } from "../services/TokenService";
 export class AuthController {
 	static async login(req: Request, res: Response, next: NextFunction) {
 		try {
-			console.log("sss");
-
 			const { login, password } = req.body as {
 				login: string;
 				password: string;
 			};
-
-			if (!login || !password) {
-				return ApiError.badRequest("Please, fill in all the fields");
-			}
 
 			const { accessToken, refreshToken } = await AuthService.login(
 				login,
@@ -40,10 +34,6 @@ export class AuthController {
 				login: string;
 				password: string;
 			};
-
-			if (!login || !password) {
-				return ApiError.badRequest("Please, fill in all the fields");
-			}
 
 			await AuthService.registration(login, password);
 

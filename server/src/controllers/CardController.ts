@@ -11,10 +11,6 @@ export class CardController {
 		try {
 			const { id } = req.params as { id: string };
 
-			if (!id) {
-				throw ApiError.badRequest("Param id is empty");
-			}
-
 			const card = await CardService.getOne(id);
 
 			return res.json({ data: card });
@@ -79,10 +75,6 @@ export class CardController {
 		try {
 			const { id } = req.params as { id: string };
 
-			if (!id) {
-				throw ApiError.badRequest("Param id is empty");
-			}
-
 			const card = await CardService.delete(id);
 
 			return res.json({ data: card });
@@ -101,14 +93,6 @@ export class CardController {
 
 			const { id } = req.params as { id: string };
 
-			if (!id) {
-				throw ApiError.badRequest("Param id is empty");
-			}
-
-			if (!body.name) {
-				throw ApiError.badRequest("Please, fill in all the fields");
-			}
-
 			const card = await CardService.update(body, id);
 
 			return res.json({ data: card });
@@ -120,10 +104,6 @@ export class CardController {
 	static async deleteMany(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { ids } = req.params as { ids: string };
-
-			if (!ids) {
-				throw ApiError.badRequest("Ids is empty");
-			}
 
 			const deletedIds = await CardService.deleteMany(ids);
 

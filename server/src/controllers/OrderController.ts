@@ -25,15 +25,9 @@ export class OrderController {
 		try {
 			getValidationErrors(req);
 
-			const { description, email, phone, name, body } = req.body as {
-				description?: string;
-				email: string;
-				phone: string;
-				name: string;
-				body: string;
-			};
+			const { message } = await OrderService.create(req.body);
 
-			await OrderService.create({ description, email, phone, name, body });
+			return res.json({ message });
 		} catch (e) {
 			next(e);
 		}
