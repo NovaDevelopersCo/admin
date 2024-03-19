@@ -58,13 +58,16 @@ export class OrderService {
 		name: string;
 		body: string;
 	}) {
+		const { body: unparsedBody, description, ...dataOrder } = order;
+
 		const orders = await OrderModel.find();
 
-		const { body, description, ...dataOrder } = order;
-
-		const parsedBody: TCreateBodyOrder[] = body ? JSON.parse(body) : [];
-
 		let price = 0;
+
+		const parsedBody = JSON.parse(unparsedBody);
+
+		const body: TCreateBodyOrder[] =
+			unparsedBody && Array.isArray(parsedBody) ? parsedBody : [];
 
 		const formattedOrder: Map<string, string> = new Map();
 
@@ -74,16 +77,14 @@ export class OrderService {
 			newOrder.description = description;
 		}
 
-		parsedBody.map((i) => {
+		body.map((i) => {
 			if (
 				!Object.keys(i).includes("card") ||
 				!Object.keys(i).includes("count")
 			) {
 				throw ApiError.badRequest("Incorrect body format");
 			}
-
 			const orderCount = formattedOrder.get(i.card);
-
 			formattedOrder.set(
 				i.card,
 				orderCount
@@ -114,11 +115,12 @@ export class OrderService {
 			await newOrderItem.save();
 		}
 
-		newOrder.number = String(orders.length);
+		newOrder.number = String(orders.length + 1);
 
 		Object.assign(newOrder, dataOrder);
 
 		newOrder.body = orderItemsArr;
+		newOrder.price = String(price);
 
 		await newOrder.save();
 

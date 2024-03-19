@@ -4,17 +4,18 @@ import {
 	DatagridConfigurable,
 	ReferenceField,
 	EditButton,
-	WrapperField
+	WrapperField,
+	SearchInput
 } from "react-admin";
 
-import { Pagination, Filters, Actions } from "../ui";
+import { Pagination, Actions } from "../ui";
 
 export const CardList = () => {
 	return (
 		<List
 			resource="cards"
 			actions={<Actions />}
-			filters={Filters}
+			filters={[<SearchInput source="q" alwaysOn />]}
 			pagination={<Pagination />}
 		>
 			<DatagridConfigurable

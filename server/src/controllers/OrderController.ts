@@ -11,8 +11,6 @@ export class OrderController {
 				sort: string;
 			};
 
-			console.log(req.query);
-
 			const { items, total } = await OrderService.getList(q, range, sort);
 
 			return res.json({ data: items, total });
@@ -29,6 +27,7 @@ export class OrderController {
 
 			return res.json({ message });
 		} catch (e) {
+			console.log(e);
 			next(e);
 		}
 	}
