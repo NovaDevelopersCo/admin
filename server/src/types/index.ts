@@ -39,3 +39,21 @@ export type TCategory = {
 	options: string[];
 	description: string;
 };
+
+export type TOrderItem = {
+	_id: string;
+	count: string;
+	card: string;
+};
+
+export type TOrder = {
+	_id: string;
+	description: string;
+	email: string;
+	phone: string;
+	name: string;
+	body: string[];
+	status: "ready" | "waiting";
+	number: string;
+	price: string;
+};

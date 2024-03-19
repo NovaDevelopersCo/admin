@@ -19,6 +19,10 @@ export class CategoryService {
 			total = items.length;
 		}
 
+		if (!total) {
+			total = items.length;
+		}
+
 		if (sortBy === "name") {
 			if (sortOrder === "ASC") {
 				items = [...items].sort((a, b) => a.name.localeCompare(b.name));
@@ -27,10 +31,6 @@ export class CategoryService {
 			if (sortOrder === "DESC") {
 				items = [...items].sort((b, a) => a.name.localeCompare(b.name));
 			}
-		}
-
-		if (!total) {
-			total = items.length;
 		}
 
 		if (Number.isInteger(+filterStart) && Number.isInteger(+filterEnd)) {

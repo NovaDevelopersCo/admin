@@ -33,6 +33,10 @@ export class CardService {
 			total = items.length;
 		}
 
+		if (!total) {
+			total = items.length;
+		}
+
 		const optionsMap: Map<string, string[]> = new Map();
 
 		items.map((i) => {
@@ -53,8 +57,6 @@ export class CardService {
 			options[key] = value;
 		}
 
-		console.log(options);
-
 		if (sortBy === "price" || sortBy === "orderCount" || sortBy === "count") {
 			if (sortOrder === "ASC") {
 				items = [...items].sort((a, b) => a.get(sortBy) - b.get(sortBy));
@@ -73,10 +75,6 @@ export class CardService {
 			if (sortOrder === "DESC") {
 				items = [...items].sort((a, b) => b.name.localeCompare(a.name));
 			}
-		}
-
-		if (!total) {
-			total = items.length;
 		}
 
 		if (Number.isInteger(+filterStart) && Number.isInteger(+filterEnd)) {
