@@ -31,11 +31,18 @@ export class CardController {
 				sort: string;
 			};
 
-			const { items, total } = await CardService.getList(q, range, sort);
+			const { items, total, options } = await CardService.getList(
+				q,
+				range,
+				sort
+			);
 
 			return res.json({
 				data: items,
-				total
+				total,
+				meta: {
+					options
+				}
 			});
 		} catch (e) {
 			next(e);

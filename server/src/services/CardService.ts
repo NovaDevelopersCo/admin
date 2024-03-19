@@ -22,7 +22,8 @@ export class CardService {
 
 		const [filterStart, filterEnd] = range ? JSON.parse(range) : [];
 
-		let items = await CardModel.find();
+		let items = await CardModel.find().populate("category");
+
 		let total;
 
 		if (q) {
@@ -31,6 +32,28 @@ export class CardService {
 			);
 			total = items.length;
 		}
+
+		const optionsMap: Map<string, string[]> = new Map();
+
+		items.map((i) => {
+			// @ts-ignore
+			const options: string[] = i.category.options;
+			options.map((o) => {
+				const value = i.get(o);
+				if (value) {
+					const optionValues = optionsMap.get(o);
+					optionsMap.set(o, optionValues ? [...optionValues, value] : [value]);
+				}
+			});
+		});
+
+		const options: { [key: string]: string[] } = {};
+
+		for (let [key, value] of optionsMap) {
+			options[key] = value;
+		}
+
+		console.log(options);
 
 		if (sortBy === "price" || sortBy === "orderCount" || sortBy === "count") {
 			if (sortOrder === "ASC") {
@@ -62,7 +85,8 @@ export class CardService {
 
 		return {
 			items,
-			total
+			total,
+			options
 		};
 	}
 
@@ -109,11 +133,11 @@ export class CardService {
 
 		const cardKeys = Object.keys(card);
 
-		options.map((o) => {
+		options.map((o: string) => {
 			if (cardFieldsArr.includes(o) && cardKeys.includes(o)) {
-				Validation.isIntegerNumberValidation(card[o].trim(), o, false);
-				if (card[o].length > 8) {
-					throw ApiError.badRequest(`${o} can't be bigger, than 8 symbols`);
+				// Validation.isIntegerNumberValidation(card[o].trim(), o, false);
+				if (card[o].trim().length > 20) {
+					throw ApiError.badRequest(`${o} can't be bigger, than 20 symbols`);
 				}
 				optionsObj[o] = card[o];
 			}
@@ -186,11 +210,11 @@ export class CardService {
 		const validateFieldsAndAssignToCard = (category: TCategory) => {
 			const cardKeys = Object.keys(card);
 
-			category.options.map((o) => {
+			category.options.map((o: string) => {
 				if (cardKeys.includes(o)) {
-					Validation.isIntegerNumberValidation(card[o].trim(), o, false);
-					if (card[o].length > 8) {
-						throw ApiError.badRequest(`${o} can't be bigger, than 8 symbols`);
+					// Validation.isIntegerNumberValidation(card[o].trim(), o, false);
+					if (card[o].trim().length > 20) {
+						throw ApiError.badRequest(`${o} can't be bigger, than 20 symbols`);
 					}
 					updatedCard[o] = card[o];
 				}

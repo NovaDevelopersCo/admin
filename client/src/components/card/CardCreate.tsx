@@ -29,7 +29,7 @@ export const CardCreate = () => {
 						required(),
 						maxLength(50),
 						regex(
-							/^[a-zA-Z0-9*()\- а-яА-Я]+$/u,
+							/^[a-zA-Z0-9*()\-.,/ а-яА-Я]+$/u,
 							"Incorrect format. Specific symbols error"
 						),
 						Validation.isStrNotOnlySpace
@@ -41,7 +41,7 @@ export const CardCreate = () => {
 					validate={[
 						number(),
 						minValue(0),
-						maxValue(9999),
+						maxValue(999999),
 						required(),
 						regex(/^\S*$/, "Can't use spaces here"),
 						regex(/^\d+$/, "Only integer number, no like: (4.0 or 5.1)")
@@ -70,11 +70,7 @@ export const CardCreate = () => {
 						label={Format.capitalizeString(i)}
 						key={i}
 						fullWidth
-						validate={[
-							maxLength(8),
-							number(),
-							regex(/^\S*$/, "Can't use spaces here")
-						]}
+						validate={[maxLength(20)]}
 					/>
 				))}
 			</SimpleForm>

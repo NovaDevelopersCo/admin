@@ -26,7 +26,7 @@ cardRoutes.post(
 			.isLength({ max: 50 })
 			.withMessage("Name can't be longer, than 50 symbols")
 			.bail()
-			.matches(/^[a-zA-Z0-9*()\- а-яА-Я]+$/u)
+			.matches(/^[a-zA-Z0-9*()\-.,/ а-яА-Я]+$/u)
 			.withMessage("Name incorrect format"),
 		body("price")
 			.trim()
@@ -36,9 +36,9 @@ cardRoutes.post(
 			.matches(/^\d+$/)
 			.withMessage("Price must be an integer")
 			.bail()
-			.isInt({ min: 0, max: 9999 })
-			.withMessage("Price can't be smaller, than 0, and bigger than 9999"),
-		body("category").notEmpty().withMessage("Category is required"),
+			.isInt({ min: 0, max: 999999 })
+			.withMessage("Price can't be smaller, than 0, and bigger than 999999"),
+		body("category").trim().notEmpty().withMessage("Category is required"),
 		body("count")
 			.trim()
 			.optional()
@@ -66,7 +66,7 @@ cardRoutes.put(
 			.bail()
 			.isLength({ max: 50 })
 			.withMessage("Name can't be longer, than 50 symbols")
-			.matches(/^[a-zA-Z0-9*()\- а-яА-Я]+$/u)
+			.matches(/^[a-zA-Z0-9*()\-.,/ а-яА-Я]+$/u)
 			.withMessage("Name incorrect format"),
 		body("price")
 			.trim()
@@ -76,8 +76,8 @@ cardRoutes.put(
 			.matches(/^\d+$/)
 			.withMessage("Price must be an integer")
 			.bail()
-			.isInt({ min: 0, max: 9999 })
-			.withMessage("Price can't be smaller, than 0, and bigger than 9999"),
+			.isInt({ min: 0, max: 999999 })
+			.withMessage("Price can't be smaller, than 0, and bigger than 999999"),
 		body("count")
 			.trim()
 			.matches(/^\d+$/)
