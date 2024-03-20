@@ -18,6 +18,16 @@ export type TCard = {
 	size: string;
 	orderCount: string;
 	category: string;
+	stamp: string;
+	view: string;
+	wall: string;
+	color: string;
+	profile: string;
+	type: string;
+	fluting: string;
+	wallHeight: string;
+	shelf: string;
+	coverage: string;
 };
 
 export type TUser = {

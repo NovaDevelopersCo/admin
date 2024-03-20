@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError";
 import type { TCard, TCategory } from "../types";
 import { CategoryModel } from "../models/Category";
 import { Validation } from "../utils/Validation";
+import { CardDto } from "../dtos/CardDto";
 
 export class CardService {
 	static async getOne(id: string) {
@@ -12,7 +13,9 @@ export class CardService {
 			throw ApiError.badRequest("Card not found");
 		}
 
-		return card;
+		const cardDto = CardDto.get(card);
+
+		return cardDto;
 	}
 
 	static async getList(unParsedTitle: string, range: string, sort: string) {
@@ -81,8 +84,10 @@ export class CardService {
 			items = items.slice(+filterStart, +filterEnd + 1);
 		}
 
+		const itemsDto = items.map((i) => CardDto.get(i));
+
 		return {
-			items,
+			items: itemsDto,
 			total,
 			options
 		};
@@ -242,7 +247,9 @@ export class CardService {
 
 		await candidate.save();
 
-		return candidate;
+		const candidateDto = CardDto.get(candidate);
+
+		return candidateDto;
 	}
 
 	static async deleteMany(unParsedIds: string) {
@@ -270,7 +277,9 @@ export class CardService {
 
 		const cards = await CardModel.find({ _id: { $in: parsedFilterObj.id } });
 
-		return cards;
+		const cardsDto = cards.map((i) => CardDto.get(i));
+
+		return cardsDto;
 	}
 
 	static async order() {}

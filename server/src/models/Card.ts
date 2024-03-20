@@ -11,6 +11,16 @@ const card = new Schema<TCard>({
 	width: { type: String },
 	thickness: { type: String },
 	size: { type: String },
+	stamp: { type: String },
+	view: { type: String },
+	wall: { type: String },
+	color: { type: String },
+	profile: { type: String },
+	type: { type: String },
+	fluting: { type: String },
+	wallHeight: { type: String },
+	shelf: { type: String },
+	coverage: { type: String },
 	orderCount: { type: String, default: "0" },
 	category: { type: String, ref: "Category", required: true }
 });
