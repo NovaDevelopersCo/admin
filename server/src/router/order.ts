@@ -88,7 +88,7 @@ orderRoutes.put(
 		body("status")
 			.notEmpty()
 			.withMessage("Status is required")
-			.isIn(["ready", "waiting"])
+			.isIn(["ready"])
 			.withMessage("Status must be ready or waiting")
 	],
 	OrderController.update

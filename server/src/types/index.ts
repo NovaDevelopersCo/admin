@@ -52,7 +52,7 @@ export type TOrder = {
 	email: string;
 	phone: string;
 	name: string;
-	body: string[];
+	body: string[] | TOrderItem[];
 	status: "ready" | "waiting";
 	number: string;
 	price: string;

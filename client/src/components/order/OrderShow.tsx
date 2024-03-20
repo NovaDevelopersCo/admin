@@ -4,7 +4,8 @@ import {
 	Show,
 	SimpleShowLayout,
 	TextField,
-	ReferenceField
+	ReferenceField,
+	useListContext
 } from "react-admin";
 
 import { PageTitle } from "../ui";
@@ -22,7 +23,12 @@ export const OrderShow = () => {
 				<TextField source="price" label="Total price" />
 				<ArrayField source="body">
 					<Datagrid bulkActionButtons={false}>
-						<ReferenceField link="show" source="card" reference="cards">
+						<ReferenceField
+							link="show"
+							label="Name"
+							source="card"
+							reference="cards"
+						>
 							<TextField source="name" />
 						</ReferenceField>
 						<TextField source="count" />

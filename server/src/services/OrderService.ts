@@ -244,13 +244,38 @@ export class OrderService {
 		const { status, previousData } = obj;
 
 		if (previousData.status !== status) {
-			const candidate = await OrderModel.findById(id);
+			const candidate = await OrderModel.findById(id).populate("body");
 
 			if (!candidate) {
 				throw ApiError.badRequest("Order not found");
 			}
 
-			if (status === "ready" || status === "waiting") {
+			if (status === "ready" && candidate.status === "waiting") {
+				const orderCard = candidate.body.map(async (i) => {
+					if (typeof i === "object") {
+						const card = await CardModel.findById(i.card);
+
+						if (!card) {
+							throw ApiError.badRequest(`Card with id: ${i.card} not found`);
+						}
+
+						const totalCount = +card.count - +i.count;
+
+						if (totalCount < 0) {
+							throw ApiError.badRequest(
+								"There is not so much product in stock"
+							);
+						}
+
+						card.count = String(totalCount);
+						card.orderCount = String(+card.orderCount + +i.count);
+
+						await card.save();
+					}
+				});
+
+				await Promise.all(orderCard);
+
 				candidate.status = status;
 
 				await candidate.save();
