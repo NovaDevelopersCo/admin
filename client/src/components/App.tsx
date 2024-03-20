@@ -9,7 +9,7 @@ import {
 import { dataProvider, authProvider } from "../providers";
 import { CardList, CardCreate, CardShow, CardEdit } from "./card";
 import { CategoryList, CategoryEdit, CategoryShow } from "./category";
-import { OrderList } from "./order";
+import { OrderList, OrderShow } from "./order";
 import { LogoutButton } from "./ui";
 import { QueryClient } from "react-query";
 
@@ -65,7 +65,7 @@ export const App = () => {
 				list={CategoryList}
 				edit={CategoryEdit}
 			/>
-			<Resource name="Orders" list={OrderList} />
+			<Resource name="Orders" list={OrderList} show={<OrderShow />} />
 		</Admin>
 	);
 };

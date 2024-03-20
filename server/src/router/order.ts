@@ -3,11 +3,16 @@ import { Router } from "express";
 import { OrderController } from "../controllers/OrderController";
 import { AuthMiddleware } from "../middlewares/AuthMiddleware";
 
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 
 const orderRoutes = Router();
 
 orderRoutes.get("/", AuthMiddleware, OrderController.getList);
+orderRoutes.get(
+	"/:id",
+	[AuthMiddleware, param("id").notEmpty().withMessage("Param id is empty")],
+	OrderController.getOne
+);
 orderRoutes.post(
 	"/",
 	[

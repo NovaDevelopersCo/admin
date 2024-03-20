@@ -9,8 +9,15 @@ type TCreateBodyOrder = {
 };
 
 export class OrderService {
-	static async getList(unParsedNumber: string, range: string, sort: string) {
+	static async getList(
+		unParsedNumber: string,
+		range: string,
+		sort: string,
+		unParsedFilter: string
+	) {
 		const [sortBy, sortOrder] = sort ? JSON.parse(sort) : [];
+
+		const filter = unParsedFilter ? JSON.parse(unParsedFilter) : {};
 
 		const q: string = unParsedNumber ? JSON.parse(unParsedNumber) : "";
 
@@ -25,6 +32,10 @@ export class OrderService {
 				i.number.toLowerCase().includes(q.toLowerCase())
 			);
 			total = items.length;
+		}
+
+		if (filter && filter.status) {
+			items = items.filter((i) => i.status === filter.status);
 		}
 
 		if (!total) {
@@ -125,5 +136,14 @@ export class OrderService {
 		await newOrder.save();
 
 		return { message: `Your order number: ${newOrder.number}` };
+	}
+
+	static async getOne(id: string) {
+		const order = await OrderModel.findById(id).populate("body");
+		if (!order) {
+			throw ApiError.badRequest("Order not found");
+		}
+
+		return order;
 	}
 }

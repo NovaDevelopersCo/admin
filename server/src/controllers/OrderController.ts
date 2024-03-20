@@ -5,13 +5,19 @@ import { getValidationErrors } from "../utils/getValidationErrors";
 export class OrderController {
 	static async getList(req: Request, res: Response, next: NextFunction) {
 		try {
-			const { q, range, sort } = req.query as {
+			const { q, range, sort, filter } = req.query as {
 				q: string;
 				range: string;
 				sort: string;
+				filter: string;
 			};
 
-			const { items, total } = await OrderService.getList(q, range, sort);
+			const { items, total } = await OrderService.getList(
+				q,
+				range,
+				sort,
+				filter
+			);
 
 			return res.json({ data: items, total });
 		} catch (e) {
@@ -28,6 +34,18 @@ export class OrderController {
 			return res.json({ message });
 		} catch (e) {
 			console.log(e);
+			next(e);
+		}
+	}
+
+	static async getOne(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { id } = req.params as { id: string };
+
+			const order = await OrderService.getOne(id);
+
+			return res.json({ data: order });
+		} catch (e) {
 			next(e);
 		}
 	}

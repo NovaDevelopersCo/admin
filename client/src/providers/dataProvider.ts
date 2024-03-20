@@ -8,7 +8,7 @@ import qs from "qs";
 import { AxiosError } from "axios";
 
 const INVALID_RESOURCE_OPERATIONS = {
-	create: ["categories"],
+	create: ["categories", "orders"],
 	delete: ["categories"],
 	deleteMany: ["categories"]
 };
@@ -54,7 +54,8 @@ const provider: DataProvider = {
 			const query = {
 				sort: JSON.stringify([field, order]),
 				range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
-				q: JSON.stringify(par.filter.q)
+				q: JSON.stringify(par.filter.q),
+				filter: JSON.stringify(par.filter)
 			};
 
 			const url = `/${res}?${qs.stringify(query)}`;

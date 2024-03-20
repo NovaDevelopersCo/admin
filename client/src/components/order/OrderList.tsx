@@ -3,7 +3,8 @@ import {
 	List,
 	Pagination,
 	TextField,
-	SearchInput
+	SearchInput,
+	SelectInput
 } from "react-admin";
 import { Actions } from "../ui";
 
@@ -22,7 +23,17 @@ export const OrderList = () => {
 			resource="orders"
 			actions={<Actions noCreate />}
 			pagination={<Pagination />}
-			filters={[<SearchInput source="q" alwaysOn />]}
+			filters={[
+				<SearchInput source="q" alwaysOn />,
+				<SelectInput
+					source="status"
+					choices={[
+						{ id: "waiting", name: "Waiting" },
+						{ id: "ready", name: "Ready" }
+					]}
+					alwaysOn
+				/>
+			]}
 		>
 			<DatagridConfigurable
 				rowClick={(id, resource) => `/${resource}/${id}/show`}
