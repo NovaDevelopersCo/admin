@@ -2,10 +2,12 @@ import type { Request, Response, NextFunction } from "express";
 import { ApiError } from "../utils/ApiError";
 import { AuthService } from "../services/AuthService";
 import { TokenService } from "../services/TokenService";
+import { getValidationErrors } from "../utils/getValidationErrors";
 
 export class AuthController {
 	static async login(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
 			const { login, password } = req.body as {
 				login: string;
 				password: string;
@@ -30,6 +32,8 @@ export class AuthController {
 
 	static async registration(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
+
 			const { login, password } = req.body as {
 				login: string;
 				password: string;

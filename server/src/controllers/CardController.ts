@@ -8,6 +8,7 @@ import { getValidationErrors } from "../utils/getValidationErrors";
 export class CardController {
 	static async getOne(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
 			const { id } = req.params as { id: string };
 
 			const card = await CardService.getOne(id);
@@ -72,6 +73,7 @@ export class CardController {
 
 	static async delete(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
 			const { id } = req.params as { id: string };
 
 			const card = await CardService.delete(id);
@@ -102,6 +104,7 @@ export class CardController {
 
 	static async deleteMany(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
 			const { ids } = req.params as { ids: string };
 
 			const deletedIds = await CardService.deleteMany(ids);

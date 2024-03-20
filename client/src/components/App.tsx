@@ -65,7 +65,7 @@ export const App = () => {
 				list={CategoryList}
 				edit={CategoryEdit}
 			/>
-			<Resource name="Orders" list={OrderList} show={<OrderShow />} />
+			<Resource name="orders" list={OrderList} show={<OrderShow />} />
 		</Admin>
 	);
 };

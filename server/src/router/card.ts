@@ -65,7 +65,7 @@ cardRoutes.delete(
 
 cardRoutes.delete(
 	"/many/:ids",
-	[AuthMiddleware, param("ids").notEmpty().withMessage("Params ids is empty")],
+	[AuthMiddleware, param("ids").notEmpty().withMessage("Param ids is empty")],
 	CardController.deleteMany
 );
 

@@ -2,6 +2,7 @@ import { CardModel } from "../models/Card";
 import { OrderModel } from "../models/Order";
 import { ApiError } from "../utils/ApiError";
 import { OrderItemModel } from "../models/OrderItem";
+import { TOrder } from "../types";
 
 type TCreateBodyOrder = {
 	card: string;
@@ -53,6 +54,26 @@ export class OrderService {
 
 			if (sortOrder === "DESC") {
 				items = items.sort((a, b) => b.number.localeCompare(a.number));
+			}
+		}
+
+		if (sortBy === "name") {
+			if (sortOrder === "ASC") {
+				items = items.sort((a, b) => a.name.localeCompare(b.name));
+			}
+
+			if (sortOrder === "DESC") {
+				items = items.sort((a, b) => b.name.localeCompare(a.name));
+			}
+		}
+
+		if (sortBy === "price") {
+			if (sortOrder === "ASC") {
+				items = items.sort((a, b) => +a.price - +b.price);
+			}
+
+			if (sortOrder === "DESC") {
+				items = items.sort((a, b) => +b.price - +a.price);
 			}
 		}
 
@@ -214,5 +235,30 @@ export class OrderService {
 		await Promise.all(deleteOrders);
 
 		return ids;
+	}
+
+	static async update(
+		id: string,
+		obj: { status: string; previousData: TOrder }
+	) {
+		const { status, previousData } = obj;
+
+		if (previousData.status !== status) {
+			const candidate = await OrderModel.findById(id);
+
+			if (!candidate) {
+				throw ApiError.badRequest("Order not found");
+			}
+
+			if (status === "ready" || status === "waiting") {
+				candidate.status = status;
+
+				await candidate.save();
+
+				return candidate;
+			}
+		}
+
+		return previousData;
 	}
 }

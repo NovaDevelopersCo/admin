@@ -8,7 +8,7 @@ import { body, param } from "express-validator";
 const orderRoutes = Router();
 
 orderRoutes.get("/", AuthMiddleware, OrderController.getList);
-orderRoutes.get("/many", OrderController.getMany);
+orderRoutes.get("/many", AuthMiddleware, OrderController.getMany);
 orderRoutes.get(
 	"/:id",
 	[AuthMiddleware, param("id").notEmpty().withMessage("Param id is empty")],
@@ -61,8 +61,8 @@ orderRoutes.post(
 			.isLength({ max: 12 })
 			.withMessage("Phone can't be longer, than 12 symbols")
 			.bail()
-			.matches(/^\+[0-9]+$/i)
-			.withMessage("Phone incorrect format"),
+			.matches(/^\+7[0-9]+$/i)
+			.withMessage("Phone incorrect format. Only +7 (Russian format)"),
 		body("body").trim().notEmpty().withMessage("Body is required")
 	],
 	OrderController.create
@@ -70,14 +70,28 @@ orderRoutes.post(
 
 orderRoutes.delete(
 	"/:id",
-	[AuthMiddleware, param("id").notEmpty().withMessage("Param id not found")],
+	[AuthMiddleware, param("id").notEmpty().withMessage("Param id is empty")],
 	OrderController.delete
 );
 
 orderRoutes.delete(
 	"/many/:ids",
-	[AuthMiddleware, param("ids").notEmpty().withMessage("Params ids is empty")],
+	[AuthMiddleware, param("ids").notEmpty().withMessage("Param ids is empty")],
 	OrderController.deleteMany
+);
+
+orderRoutes.put(
+	"/:id",
+	[
+		AuthMiddleware,
+		param("id").notEmpty().withMessage("Param id is empty"),
+		body("status")
+			.notEmpty()
+			.withMessage("Status is required")
+			.isIn(["ready", "waiting"])
+			.withMessage("Status must be ready or waiting")
+	],
+	OrderController.update
 );
 
 export { orderRoutes };

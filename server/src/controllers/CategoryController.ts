@@ -35,6 +35,7 @@ export class CategoryController {
 
 	static async getOne(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
 			const { id } = req.params as { id: string };
 
 			const category = await CategoryService.getOne(id);

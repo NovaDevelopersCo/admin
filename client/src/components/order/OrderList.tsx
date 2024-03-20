@@ -8,17 +8,15 @@ import {
 	DeleteButton,
 	WrapperField
 } from "react-admin";
-import { $api } from "../../api/http";
 import { Actions } from "../ui";
-import { useEffect } from "react";
 
 export const OrderList = () => {
 	// useEffect(() => {
 	// 	$api.post("/orders", {
-	// 		body: JSON.stringify([{ count: "55", card: "65f978e5561c2441dfe4f9bc" }]),
-	// 		name: "леша столлпыыв",
-	// 		email: "email@gmail.com",
-	// 		phone: "+79891119811"
+	// 		body: JSON.stringify([{ count: "11", card: "65f978e5561c2441dfe4f9bc" }]),
+	// 		name: "алеша столлпыыв",
+	// 		email: "amail@gmail.com",
+	// 		phone: "+71891119811"
 	// 	});
 	// }, []);
 
@@ -43,7 +41,7 @@ export const OrderList = () => {
 				rowClick={(id, resource) => `/${resource}/${id}/show`}
 			>
 				<TextField source="number" />
-				<TextField source="status" />
+				<TextField source="status" sortable={false} />
 				<TextField source="name" />
 				<TextField source="price" />
 				<WrapperField label="Actions">

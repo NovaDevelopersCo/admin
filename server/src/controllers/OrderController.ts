@@ -52,6 +52,7 @@ export class OrderController {
 
 	static async getOne(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
 			const { id } = req.params as { id: string };
 
 			const order = await OrderService.getOne(id);
@@ -71,6 +72,7 @@ export class OrderController {
 
 	static async delete(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
 			const { id } = req.params as { id: string };
 
 			const order = await OrderService.delete(id);
@@ -83,11 +85,24 @@ export class OrderController {
 
 	static async deleteMany(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
 			const { ids } = req.params as { ids: string };
 
 			const deletedIds = await OrderService.deleteMany(ids);
 
 			return res.json({ ids: deletedIds });
+		} catch (e) {
+			next(e);
+		}
+	}
+
+	static async update(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { id } = req.params as { id: string };
+
+			const order = await OrderService.update(id, req.body);
+
+			return res.json({ data: order });
 		} catch (e) {
 			next(e);
 		}
