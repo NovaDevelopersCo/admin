@@ -8,6 +8,7 @@ import { body, param } from "express-validator";
 const orderRoutes = Router();
 
 orderRoutes.get("/", AuthMiddleware, OrderController.getList);
+orderRoutes.get("/many", OrderController.getMany);
 orderRoutes.get(
 	"/:id",
 	[AuthMiddleware, param("id").notEmpty().withMessage("Param id is empty")],
@@ -65,6 +66,18 @@ orderRoutes.post(
 		body("body").trim().notEmpty().withMessage("Body is required")
 	],
 	OrderController.create
+);
+
+orderRoutes.delete(
+	"/:id",
+	[AuthMiddleware, param("id").notEmpty().withMessage("Param id not found")],
+	OrderController.delete
+);
+
+orderRoutes.delete(
+	"/many/:ids",
+	[AuthMiddleware, param("ids").notEmpty().withMessage("Params ids is empty")],
+	OrderController.deleteMany
 );
 
 export { orderRoutes };

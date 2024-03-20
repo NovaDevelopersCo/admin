@@ -4,9 +4,13 @@ import {
 	Pagination,
 	TextField,
 	SearchInput,
-	SelectInput
+	SelectInput,
+	DeleteButton,
+	WrapperField
 } from "react-admin";
+import { $api } from "../../api/http";
 import { Actions } from "../ui";
+import { useEffect } from "react";
 
 export const OrderList = () => {
 	// useEffect(() => {
@@ -42,6 +46,9 @@ export const OrderList = () => {
 				<TextField source="status" />
 				<TextField source="name" />
 				<TextField source="price" />
+				<WrapperField label="Actions">
+					<DeleteButton />
+				</WrapperField>
 			</DatagridConfigurable>
 		</List>
 	);

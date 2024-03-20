@@ -248,15 +248,11 @@ export class CardService {
 	static async deleteMany(unParsedIds: string) {
 		const ids = JSON.parse(unParsedIds) as string[];
 
-		const deleteCards = ids.map(async (id) => {
-			const { deletedCount } = await CardModel.deleteOne({ _id: id });
+		const { deletedCount } = await CardModel.deleteMany({ _id: ids });
 
-			if (deletedCount == 0) {
-				throw ApiError.badRequest("Error delete");
-			}
-		});
-
-		await Promise.all(deleteCards);
+		if (deletedCount !== ids.length) {
+			throw ApiError.badRequest("Error deleting cards");
+		}
 
 		return ids;
 	}

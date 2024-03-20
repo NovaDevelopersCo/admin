@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../utils/ApiError";
 
 import { CardService } from "../services/CardService";
 import { TCard } from "../types";

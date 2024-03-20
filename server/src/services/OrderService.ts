@@ -140,10 +140,79 @@ export class OrderService {
 
 	static async getOne(id: string) {
 		const order = await OrderModel.findById(id).populate("body");
+
 		if (!order) {
 			throw ApiError.badRequest("Order not found");
 		}
 
 		return order;
+	}
+
+	static async getMany(filter: string) {
+		if (!filter) {
+			return [];
+		}
+
+		const parsedFilterObj = JSON.parse(filter);
+
+		if (!parsedFilterObj.id) {
+			return [];
+		}
+
+		const orders = await OrderModel.find({ _id: { $in: parsedFilterObj.id } });
+
+		return orders;
+	}
+
+	static async delete(id: string) {
+		const candidate = await OrderModel.findById(id);
+
+		if (!candidate) {
+			throw ApiError.badRequest("Order not found");
+		}
+
+		const { deletedCount: deletedOrderItemsCount } =
+			await OrderItemModel.deleteMany({ _id: candidate.body });
+
+		if (deletedOrderItemsCount !== candidate.body.length) {
+			throw ApiError.badRequest("Error deleting order-items");
+		}
+		const previousData = candidate;
+
+		const { deletedCount } = await OrderModel.deleteOne({ _id: id });
+
+		if (deletedCount == 0) {
+			throw ApiError.badRequest(`Can't delete order with id: ${id}`);
+		}
+
+		return previousData;
+	}
+
+	static async deleteMany(unParsedIds: string) {
+		const ids = JSON.parse(unParsedIds) as string[];
+
+		const deleteOrders = ids.map(async (orderId) => {
+			const order = await OrderModel.findById(orderId);
+			if (!order) {
+				throw ApiError.badRequest(`Can't find order with id: ${orderId}`);
+			}
+
+			const { deletedCount: deletedOrderItemsCount } =
+				await OrderItemModel.deleteMany({ _id: order.body });
+
+			if (deletedOrderItemsCount !== order.body.length) {
+				throw ApiError.badRequest("Can't delete order-items");
+			}
+
+			const { deletedCount } = await OrderModel.deleteOne({ _id: orderId });
+
+			if (deletedCount == 0) {
+				throw ApiError.badRequest(`Error delete order with id: ${orderId}`);
+			}
+		});
+
+		await Promise.all(deleteOrders);
+
+		return ids;
 	}
 }

@@ -1,4 +1,11 @@
-import { Show, SimpleShowLayout, TextField } from "react-admin";
+import {
+	ArrayField,
+	Datagrid,
+	Show,
+	SimpleShowLayout,
+	TextField,
+	ReferenceField
+} from "react-admin";
 
 import { PageTitle } from "../ui";
 
@@ -13,7 +20,14 @@ export const OrderShow = () => {
 				<TextField source="phone" />
 				<TextField source="description" emptyText="-" />
 				<TextField source="price" label="Total price" />
-				{/* ADD BODY */}
+				<ArrayField source="body">
+					<Datagrid bulkActionButtons={false}>
+						<ReferenceField link="show" source="card" reference="cards">
+							<TextField source="name" />
+						</ReferenceField>
+						<TextField source="count" />
+					</Datagrid>
+				</ArrayField>
 			</SimpleShowLayout>
 		</Show>
 	);

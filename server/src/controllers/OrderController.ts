@@ -25,6 +25,18 @@ export class OrderController {
 		}
 	}
 
+	static async getMany(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { filter } = req.query as { filter: string };
+
+			const orders = await OrderService.getMany(filter);
+
+			return res.json({ data: orders });
+		} catch (e) {
+			next(e);
+		}
+	}
+
 	static async create(req: Request, res: Response, next: NextFunction) {
 		try {
 			getValidationErrors(req);
@@ -52,6 +64,30 @@ export class OrderController {
 
 	static async getStatistic(req: Request, res: Response, next: NextFunction) {
 		try {
+		} catch (e) {
+			next(e);
+		}
+	}
+
+	static async delete(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { id } = req.params as { id: string };
+
+			const order = await OrderService.delete(id);
+
+			return res.json({ data: order });
+		} catch (e) {
+			next(e);
+		}
+	}
+
+	static async deleteMany(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { ids } = req.params as { ids: string };
+
+			const deletedIds = await OrderService.deleteMany(ids);
+
+			return res.json({ ids: deletedIds });
 		} catch (e) {
 			next(e);
 		}
