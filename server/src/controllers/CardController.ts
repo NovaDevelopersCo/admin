@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../utils/ApiError";
 
 import { CardService } from "../services/CardService";
 import { TCard } from "../types";
@@ -9,11 +8,8 @@ import { getValidationErrors } from "../utils/getValidationErrors";
 export class CardController {
 	static async getOne(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
 			const { id } = req.params as { id: string };
-
-			if (!id) {
-				throw ApiError.badRequest("Param id is empty");
-			}
 
 			const card = await CardService.getOne(id);
 
@@ -25,19 +21,37 @@ export class CardController {
 
 	static async getList(req: Request, res: Response, next: NextFunction) {
 		try {
-			const { q, range, sort } = req.query as {
+			const {
+				q,
+				range,
+				sort,
+				options: optionsData,
+				full
+			} = req.query as {
 				q: string;
 				range: string;
 				sort: string;
+				options: string;
+				full?: string;
 			};
 
-			const { items, total } = await CardService.getList(q, range, sort);
+			const { items, total, options } = await CardService.getList(
+				q,
+				range,
+				sort,
+				optionsData,
+				full
+			);
 
 			return res.json({
 				data: items,
-				total
+				total,
+				meta: {
+					options
+				}
 			});
 		} catch (e) {
+			console.log(e);
 			next(e);
 		}
 	}
@@ -70,11 +84,8 @@ export class CardController {
 
 	static async delete(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
 			const { id } = req.params as { id: string };
-
-			if (!id) {
-				throw ApiError.badRequest("Param id is empty");
-			}
 
 			const card = await CardService.delete(id);
 
@@ -94,14 +105,6 @@ export class CardController {
 
 			const { id } = req.params as { id: string };
 
-			if (!id) {
-				throw ApiError.badRequest("Param id is empty");
-			}
-
-			if (!body.name) {
-				throw ApiError.badRequest("Please, fill in all the fields");
-			}
-
 			const card = await CardService.update(body, id);
 
 			return res.json({ data: card });
@@ -112,11 +115,8 @@ export class CardController {
 
 	static async deleteMany(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
 			const { ids } = req.params as { ids: string };
-
-			if (!ids) {
-				throw ApiError.badRequest("Ids is empty");
-			}
 
 			const deletedIds = await CardService.deleteMany(ids);
 

@@ -5,17 +5,17 @@ import {
 	ImageField,
 	WrapperField,
 	EditButton,
-	ShowButton
+	SearchInput
 } from "react-admin";
 
-import { Actions, Filters, Pagination, Description } from "../ui";
+import { Actions, Pagination, Description } from "../ui";
 
 export const CategoryList = () => {
 	return (
 		<List
 			resource="categories"
 			actions={<Actions noCreate />}
-			filters={Filters}
+			filters={[<SearchInput source="q" alwaysOn />]}
 			pagination={<Pagination />}
 		>
 			<DatagridConfigurable

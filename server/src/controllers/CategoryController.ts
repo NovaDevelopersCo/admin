@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { CategoryService } from "../services/CategoryService";
 
-import { ApiError } from "../utils/ApiError";
+import { getValidationErrors } from "../utils/getValidationErrors";
 
 export class CategoryController {
 	static async getList(req: Request, res: Response, next: NextFunction) {
@@ -35,6 +35,7 @@ export class CategoryController {
 
 	static async getOne(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
 			const { id } = req.params as { id: string };
 
 			const category = await CategoryService.getOne(id);
@@ -47,16 +48,14 @@ export class CategoryController {
 
 	static async update(req: Request, res: Response, next: NextFunction) {
 		try {
+			getValidationErrors(req);
+
 			const { id } = req.params as { id: string };
 
 			const { description, image } = req.body as {
 				image: string;
 				description: string;
 			};
-
-			if (!id) {
-				throw ApiError.badRequest("Param id is empty");
-			}
 
 			const category = await CategoryService.update({ description, image }, id);
 

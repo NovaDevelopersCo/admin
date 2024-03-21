@@ -1,9 +1,16 @@
-import { Admin, Resource, TitlePortal } from "react-admin";
+import {
+	Admin,
+	Resource,
+	TitlePortal,
+	UserMenu,
+	AppBar,
+	Layout
+} from "react-admin";
 import { dataProvider, authProvider } from "../providers";
 import { CardList, CardCreate, CardShow, CardEdit } from "./card";
-import { LogoutButton } from "./ui";
-import { UserMenu, AppBar, Layout } from "react-admin";
 import { CategoryList, CategoryEdit, CategoryShow } from "./category";
+import { OrderList, OrderShow, OrderEdit } from "./order";
+import { LogoutButton } from "./ui";
 import { QueryClient } from "react-query";
 
 const MyUserMenu = () => (
@@ -57,6 +64,12 @@ export const App = () => {
 				show={CategoryShow}
 				list={CategoryList}
 				edit={CategoryEdit}
+			/>
+			<Resource
+				name="orders"
+				list={OrderList}
+				show={OrderShow}
+				edit={OrderEdit}
 			/>
 		</Admin>
 	);

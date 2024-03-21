@@ -18,6 +18,16 @@ export type TCard = {
 	size: string;
 	orderCount: string;
 	category: string;
+	stamp: string;
+	view: string;
+	wall: string;
+	color: string;
+	profile: string;
+	type: string;
+	fluting: string;
+	wallHeight: string;
+	shelf: string;
+	coverage: string;
 };
 
 export type TUser = {
@@ -38,4 +48,22 @@ export type TCategory = {
 	name: string;
 	options: string[];
 	description: string;
+};
+
+export type TOrderItem = {
+	_id: string;
+	count: string;
+	card: string;
+};
+
+export type TOrder = {
+	_id: string;
+	description: string;
+	email: string;
+	phone: string;
+	name: string;
+	body: string[] | TOrderItem[];
+	status: "ready" | "waiting";
+	number: string;
+	price: string;
 };

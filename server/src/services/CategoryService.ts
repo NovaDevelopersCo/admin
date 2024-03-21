@@ -4,10 +4,27 @@ import { ImageService } from "./ImageService";
 
 export class CategoryService {
 	static async getList(name: string, range: string, sort: string) {
-		const [sortBy, sortOrder] = sort ? JSON.parse(sort) : [];
-		const [filterStart, filterEnd] = range ? JSON.parse(range) : [];
+		let parsedSort: string[] = [];
+		let parsedFilter: string[] = [];
+		let q = "";
 
-		const q = name ? JSON.parse(name) : "";
+		try {
+			if (sort) {
+				parsedSort = JSON.parse(sort);
+			}
+
+			if (range) {
+				parsedFilter = JSON.parse(range);
+			}
+			if (name) {
+				q = JSON.parse(name);
+			}
+		} catch (e) {
+			throw ApiError.badRequest("Can't parse query params");
+		}
+
+		const [sortBy, sortOrder] = parsedSort;
+		const [filterStart, filterEnd] = parsedFilter;
 
 		let items = await CategoryModel.find();
 		let total;
@@ -16,6 +33,10 @@ export class CategoryService {
 			items = items.filter((i) =>
 				i.name.toLowerCase().includes(q.toLowerCase())
 			);
+			total = items.length;
+		}
+
+		if (!total) {
 			total = items.length;
 		}
 
@@ -29,11 +50,11 @@ export class CategoryService {
 			}
 		}
 
-		if (filterStart && filterEnd) {
+		if (Number.isInteger(+filterStart) && Number.isInteger(+filterEnd)) {
 			items = items.slice(+filterStart, +filterEnd + 1);
 		}
 
-		return { items, total: total ?? items.length };
+		return { items, total };
 	}
 
 	static async getOne(id: string) {
@@ -51,7 +72,7 @@ export class CategoryService {
 			description,
 			image
 		}: {
-			description?: string;
+			description: string;
 			image?: string;
 		},
 		id: string
@@ -62,9 +83,7 @@ export class CategoryService {
 			throw ApiError.badRequest("Category not found");
 		}
 
-		if (description) {
-			category.description = description;
-		}
+		category.description = description;
 
 		if (image) {
 			const imageUrl = await ImageService.upload(
@@ -85,7 +104,13 @@ export class CategoryService {
 			return [];
 		}
 
-		const parsedFilterObj = JSON.parse(filter);
+		let parsedFilterObj;
+
+		try {
+			parsedFilterObj = JSON.parse(filter);
+		} catch (e) {
+			throw ApiError.badRequest("Can't parse query params");
+		}
 
 		if (!parsedFilterObj.id) {
 			return [];

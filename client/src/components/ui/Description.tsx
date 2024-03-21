@@ -1,6 +1,6 @@
 import { useRecordContext } from "react-admin";
 
-import { formatDescription } from "../../utils";
+import { Format } from "../../utils";
 
 export const Description = ({
 	source
@@ -11,6 +11,6 @@ export const Description = ({
 	const record = useRecordContext({ source });
 
 	return record && record[source] ? (
-		<p>{formatDescription(record[source])}</p>
+		<p>{Format.formatDescription(record[source])}</p>
 	) : null;
 };
