@@ -29,15 +29,30 @@ export class CardService {
 		optionsData: string,
 		full?: string
 	) {
-		const [sortBy, sortOrder] = sort ? JSON.parse(sort) : [];
+		let parsedSort: string[] = [];
+		let parsedFilter: string[] = [];
+		let q = "";
+		let parsedOptions: TGetListOption[] = [];
 
-		const q: string = unParsedTitle ? JSON.parse(unParsedTitle) : "";
+		try {
+			if (sort) {
+				parsedSort = JSON.parse(sort);
+			}
+			if (range) {
+				parsedFilter = JSON.parse(range);
+			}
+			if (unParsedTitle) {
+				q = JSON.parse(unParsedTitle);
+			}
+			if (optionsData) {
+				parsedOptions = JSON.parse(optionsData);
+			}
+		} catch (e) {
+			throw ApiError.badRequest("Can't parse query params");
+		}
 
-		const [filterStart, filterEnd] = range ? JSON.parse(range) : [];
-
-		const parsedOptions: TGetListOption[] = optionsData
-			? JSON.parse(optionsData)
-			: [];
+		const [sortBy, sortOrder] = parsedSort;
+		const [filterStart, filterEnd] = parsedFilter;
 
 		let items;
 
@@ -82,11 +97,11 @@ export class CardService {
 
 		if (sortBy === "price" || sortBy === "orderCount" || sortBy === "count") {
 			if (sortOrder === "ASC") {
-				items = [...items].sort((a, b) => a.get(sortBy) - b.get(sortBy));
+				items = [...items].sort((a, b) => +a.get(sortBy) - +b.get(sortBy));
 			}
 
 			if (sortOrder === "DESC") {
-				items = [...items].sort((a, b) => b.get(sortBy) - a.get(sortBy));
+				items = [...items].sort((a, b) => +b.get(sortBy) - +a.get(sortBy));
 			}
 		}
 
@@ -273,7 +288,13 @@ export class CardService {
 	}
 
 	static async deleteMany(unParsedIds: string) {
-		const ids = JSON.parse(unParsedIds) as string[];
+		let ids: string[] = [];
+
+		try {
+			ids = JSON.parse(unParsedIds);
+		} catch (e) {
+			throw ApiError.badRequest("Can't parse query params");
+		}
 
 		const { deletedCount } = await CardModel.deleteMany({ _id: ids });
 
@@ -289,7 +310,13 @@ export class CardService {
 			return [];
 		}
 
-		const parsedFilterObj = JSON.parse(filter);
+		let parsedFilterObj;
+
+		try {
+			parsedFilterObj = JSON.parse(filter);
+		} catch (e) {
+			throw ApiError.badRequest("Can't parse query params");
+		}
 
 		if (!parsedFilterObj.id) {
 			return [];

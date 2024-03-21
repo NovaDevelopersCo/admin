@@ -16,13 +16,30 @@ export class OrderService {
 		sort: string,
 		unParsedFilter: string
 	) {
-		const [sortBy, sortOrder] = sort ? JSON.parse(sort) : [];
+		let parsedSort: string[] = [];
+		let parsedFilter: string[] = [];
+		let filter: null | { status: string } = null;
+		let q = "";
 
-		const filter = unParsedFilter ? JSON.parse(unParsedFilter) : {};
+		try {
+			if (sort) {
+				parsedSort = JSON.parse(sort);
+			}
+			if (range) {
+				parsedFilter = JSON.parse(range);
+			}
+			if (unParsedFilter) {
+				filter = JSON.parse(unParsedFilter);
+			}
+			if (unParsedNumber) {
+				q = JSON.parse(unParsedNumber);
+			}
+		} catch (e) {
+			throw ApiError.badRequest("Can't parse query params");
+		}
 
-		const q: string = unParsedNumber ? JSON.parse(unParsedNumber) : "";
-
-		const [filterStart, filterEnd] = range ? JSON.parse(range) : [];
+		const [sortBy, sortOrder] = parsedSort;
+		const [filterStart, filterEnd] = parsedFilter;
 
 		let items = await OrderModel.find();
 
@@ -36,7 +53,7 @@ export class OrderService {
 		}
 
 		if (filter && filter.status) {
-			items = items.filter((i) => i.status === filter.status);
+			items = items.filter((i) => i.status === filter?.status);
 		}
 
 		if (!total) {
@@ -96,7 +113,13 @@ export class OrderService {
 
 		let price = 0;
 
-		const parsedBody = JSON.parse(unparsedBody);
+		let parsedBody;
+
+		try {
+			parsedBody = JSON.parse(unparsedBody);
+		} catch (e) {
+			throw ApiError.badRequest("Can't parse query params");
+		}
 
 		const body: TCreateBodyOrder[] =
 			unparsedBody && Array.isArray(parsedBody) ? parsedBody : [];
@@ -174,7 +197,13 @@ export class OrderService {
 			return [];
 		}
 
-		const parsedFilterObj = JSON.parse(filter);
+		let parsedFilterObj;
+
+		try {
+			parsedFilterObj = JSON.parse(filter);
+		} catch (e) {
+			throw ApiError.badRequest("Can't parse query params");
+		}
 
 		if (!parsedFilterObj.id) {
 			return [];
@@ -210,7 +239,15 @@ export class OrderService {
 	}
 
 	static async deleteMany(unParsedIds: string) {
-		const ids = JSON.parse(unParsedIds) as string[];
+		let ids: string[] = [];
+
+		try {
+			if (unParsedIds) {
+				ids = JSON.parse(unParsedIds);
+			}
+		} catch (e) {
+			throw ApiError.badRequest("Can't parse query params");
+		}
 
 		const deleteOrders = ids.map(async (orderId) => {
 			const order = await OrderModel.findById(orderId);

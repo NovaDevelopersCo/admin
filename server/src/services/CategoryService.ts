@@ -4,10 +4,27 @@ import { ImageService } from "./ImageService";
 
 export class CategoryService {
 	static async getList(name: string, range: string, sort: string) {
-		const [sortBy, sortOrder] = sort ? JSON.parse(sort) : [];
-		const [filterStart, filterEnd] = range ? JSON.parse(range) : [];
+		let parsedSort: string[] = [];
+		let parsedFilter: string[] = [];
+		let q = "";
 
-		const q = name ? JSON.parse(name) : "";
+		try {
+			if (sort) {
+				parsedSort = JSON.parse(sort);
+			}
+
+			if (range) {
+				parsedFilter = JSON.parse(range);
+			}
+			if (name) {
+				q = JSON.parse(name);
+			}
+		} catch (e) {
+			throw ApiError.badRequest("Can't parse query params");
+		}
+
+		const [sortBy, sortOrder] = parsedSort;
+		const [filterStart, filterEnd] = parsedFilter;
 
 		let items = await CategoryModel.find();
 		let total;
@@ -87,7 +104,13 @@ export class CategoryService {
 			return [];
 		}
 
-		const parsedFilterObj = JSON.parse(filter);
+		let parsedFilterObj;
+
+		try {
+			parsedFilterObj = JSON.parse(filter);
+		} catch (e) {
+			throw ApiError.badRequest("Can't parse query params");
+		}
 
 		if (!parsedFilterObj.id) {
 			return [];
