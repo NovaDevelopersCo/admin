@@ -5,6 +5,10 @@ import { CategoryModel } from "../models/Category";
 import { Validation } from "../utils/Validation";
 import { CardDto } from "../dtos/CardDto";
 
+type TGetListOption = {
+	[key: string]: string;
+};
+
 export class CardService {
 	static async getOne(id: string) {
 		const card = await CardModel.findById(id);
@@ -13,19 +17,35 @@ export class CardService {
 			throw ApiError.badRequest("Card not found");
 		}
 
-		const cardDto = CardDto.get(card);
+		const cardDto = new CardDto(card);
 
 		return cardDto;
 	}
 
-	static async getList(unParsedTitle: string, range: string, sort: string) {
+	static async getList(
+		unParsedTitle: string,
+		range: string,
+		sort: string,
+		optionsData: string,
+		full?: string
+	) {
 		const [sortBy, sortOrder] = sort ? JSON.parse(sort) : [];
 
 		const q: string = unParsedTitle ? JSON.parse(unParsedTitle) : "";
 
 		const [filterStart, filterEnd] = range ? JSON.parse(range) : [];
 
-		let items = await CardModel.find().populate("category");
+		const parsedOptions: TGetListOption[] = optionsData
+			? JSON.parse(optionsData)
+			: [];
+
+		let items;
+
+		if (parsedOptions.length > 0) {
+			items = await CardModel.find({ $or: parsedOptions }).populate("category");
+		} else {
+			items = await CardModel.find().populate("category");
+		}
 
 		let total;
 
@@ -84,7 +104,7 @@ export class CardService {
 			items = items.slice(+filterStart, +filterEnd + 1);
 		}
 
-		const itemsDto = items.map((i) => CardDto.get(i));
+		const itemsDto = items.map((i) => new CardDto(i, full));
 
 		return {
 			items: itemsDto,
@@ -247,7 +267,7 @@ export class CardService {
 
 		await candidate.save();
 
-		const candidateDto = CardDto.get(candidate);
+		const candidateDto = new CardDto(candidate);
 
 		return candidateDto;
 	}
@@ -277,10 +297,8 @@ export class CardService {
 
 		const cards = await CardModel.find({ _id: { $in: parsedFilterObj.id } });
 
-		const cardsDto = cards.map((i) => CardDto.get(i));
+		const cardsDto = cards.map((i) => new CardDto(i, "full"));
 
 		return cardsDto;
 	}
-
-	static async order() {}
 }

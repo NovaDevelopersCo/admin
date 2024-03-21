@@ -31,7 +31,6 @@ export const CardList = () => {
 				>
 					<TextField source="name" />
 				</ReferenceField>
-				<TextField source="orderCount" />
 				<WrapperField label="Actions">
 					<EditButton />
 				</WrapperField>

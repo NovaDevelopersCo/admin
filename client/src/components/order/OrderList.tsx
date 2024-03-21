@@ -11,15 +11,6 @@ import {
 import { Actions } from "../ui";
 
 export const OrderList = () => {
-	// useEffect(() => {
-	// 	$api.post("/orders", {
-	// 		body: JSON.stringify([{ count: "33", card: "65f978e5561c2441dfe4f9bc" }]),
-	// 		name: "алеша столлпыыв",
-	// 		email: "amail@gmail.com",
-	// 		phone: "+71891119811"
-	// 	});
-	// }, []);
-
 	return (
 		<List
 			resource="orders"

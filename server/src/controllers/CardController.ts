@@ -21,16 +21,26 @@ export class CardController {
 
 	static async getList(req: Request, res: Response, next: NextFunction) {
 		try {
-			const { q, range, sort } = req.query as {
+			const {
+				q,
+				range,
+				sort,
+				options: optionsData,
+				full
+			} = req.query as {
 				q: string;
 				range: string;
 				sort: string;
+				options: string;
+				full?: string;
 			};
 
 			const { items, total, options } = await CardService.getList(
 				q,
 				range,
-				sort
+				sort,
+				optionsData,
+				full
 			);
 
 			return res.json({
@@ -41,6 +51,7 @@ export class CardController {
 				}
 			});
 		} catch (e) {
+			console.log(e);
 			next(e);
 		}
 	}
