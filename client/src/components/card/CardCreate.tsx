@@ -44,7 +44,7 @@ export const CardCreate = () => {
 						maxValue(999999),
 						required(),
 						regex(/^\S*$/, "Can't use spaces here"),
-						regex(/^\d+$/, "Only integer number, no like: (4.0 or 5.1)")
+						regex(/^\d+$/, "Only integer number, not as: (4.0 or 5.1)")
 					]}
 					label="Price"
 					fullWidth
@@ -58,7 +58,7 @@ export const CardCreate = () => {
 						minValue(0),
 						maxValue(999),
 						regex(/^\S*$/, "Can't use spaces here"),
-						regex(/^\d+$/, "Only integer number. No like 4.0 or 5.1")
+						regex(/^\d+$/, "Only integer number, not as: (4.0 or 5.1)")
 					]}
 				/>
 				<ReferenceInput source="category" reference="categories">
